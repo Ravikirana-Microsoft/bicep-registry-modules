@@ -1,5 +1,5 @@
 # >>> UPDATE to for example "avm.res.key-vault.vault" and remove this comment
-name: "avm.ptn.sa.chat-with-your-data-solution-accelerator"
+name: "avm.ptn.sa.chat-with-your-data"
 
 on:
   workflow_dispatch:
@@ -31,18 +31,18 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
         # >>> UPDATE to for example ".github/workflows/avm.res.key-vault.vault.yml" and remove this comment
-      - ".github/workflows/avm.ptn.sa.chat-with-your-data-solution-accelerator.yml"
+      - ".github/workflows/avm.ptn.sa.chat-with-your-data.yml"
         # >>> UPDATE to for example "avm/res/key-vault/vault/**" and remove this comment
-      - "avm/ptn/sa/chat-with-your-data-solution-accelerator/**"
+      - "avm/ptn/sa/chat-with-your-data/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
   # >>> UPDATE to for example "avm/res/key-vault/vault" and remove this comment
-  modulePath: "avm/ptn/sa/chat-with-your-data-solution-accelerator"
+  modulePath: "avm/ptn/sa/chat-with-your-data"
   # >>> Update to for example ".github/workflows/avm.res.key-vault.vault.yml" and remove this comment
-  workflowPath: ".github/workflows/avm.ptn.sa.chat-with-your-data-solution-accelerator.yml"
+  workflowPath: ".github/workflows/avm.ptn.sa.chat-with-your-data.yml"
 
 concurrency:
   group: ${{ github.workflow }}
