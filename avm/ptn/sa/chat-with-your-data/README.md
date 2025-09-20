@@ -19,8 +19,9 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.CognitiveServices/accounts` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/deployments` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
 | `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2022-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions)</li></ul> |
@@ -43,7 +44,6 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Insights/workbooks` | 2023-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_workbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-06-01/workbooks)</li></ul> |
 | `Microsoft.KeyVault/vaults` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
@@ -98,100 +98,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Chat with your data Solution Accelerator - Defaults Test](#example-1-chat-with-your-data-solution-accelerator---defaults-test)
-- [Chat with your data Solution Accelerator - WAF Aligned Test](#example-2-chat-with-your-data-solution-accelerator---waf-aligned-test)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Chat with your data Solution Accelerator - Defaults Test_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
-This test deploys the Chat with your data Solution Accelerator with default parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
-  params: {
-    createdBy: 'AVM_Pipeline'
-    enableMonitoring: false
-    enablePrivateNetworking: true
-    enableRedundancy: false
-    enableScalability: false
-    enableTelemetry: false
-    location: '<location>'
-    solutionName: 'scwydsmin001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": true
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    "enableTelemetry": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "scwydsmin001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param createdBy = 'AVM_Pipeline'
-param enableMonitoring = false
-param enablePrivateNetworking = true
-param enableRedundancy = false
-param enableScalability = false
-param enableTelemetry = false
-param location = '<location>'
-param solutionName = 'scwydsmin001'
-```
-
-</details>
-<p>
-
-### Example 2: _Chat with your data Solution Accelerator - WAF Aligned Test_
-
-This test deploys the Chat with your data Solution Accelerator with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+This test deploys the Chat with your data Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
 
 <details>
@@ -272,6 +184,69 @@ param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
 param solutionName = 'scwydswaf001'
+```
+
+</details>
+<p>
+
+### Example 2: _Sandbox configuration with default parameter values_
+
+This test deploys the sandbox configuration for Chat with your data Solution Accelerator with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  name: 'chatWithYourDataDeployment'
+  params: {
+    createdBy: 'AVM_Pipeline'
+    location: '<location>'
+    solutionName: 'scwydsmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scwydsmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
+
+param createdBy = 'AVM_Pipeline'
+param location = '<location>'
+param solutionName = 'scwydsmin001'
 ```
 
 </details>
@@ -994,6 +969,7 @@ The password for the administrator account of the virtual machine. Allows to cus
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `virtualMachineAdminUsername`
 
@@ -1001,6 +977,7 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `vmSize`
 
@@ -1056,7 +1033,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
 | `br/public:avm/res/db-for-postgre-sql/flexible-server:0.13.1` | Remote reference |
 | `br/public:avm/res/event-grid/system-topic:0.6.3` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |
