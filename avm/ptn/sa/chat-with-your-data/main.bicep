@@ -176,7 +176,6 @@ param azureOpenAIVisionModelCapacity int = 10
   'openai_function'
   'semantic_kernel'
   'langchain'
-  'prompt_flow'
 ])
 param orchestrationStrategy string = 'semantic_kernel'
 
@@ -1402,24 +1401,6 @@ module monitoring 'modules/core/monitor/monitoring.bicep' = if (enableMonitoring
   }
 }
 
-module workbook 'modules/app/workbook.bicep' = if (enableMonitoring) {
-  name: 'workbook'
-  scope: resourceGroup()
-  params: {
-    workbookDisplayName: workbookDisplayName
-    location: location
-    hostingPlanName: webServerFarm.outputs.name
-    functionName: function.outputs.functionName
-    websiteName: web.outputs.FRONTEND_API_NAME
-    adminWebsiteName: adminweb.outputs.WEBSITE_ADMIN_NAME
-    eventGridSystemTopicName: eventgrid.outputs.name
-    logAnalyticsResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
-    azureOpenAIResourceName: openai.outputs.name
-    azureAISearchName: databaseType == 'CosmosDB' ? search!.outputs.searchName : ''
-    storageAccountName: storage.outputs.name
-  }
-}
-
 // Update your formrecognizer module
 module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
   name: formRecognizerName
@@ -1629,51 +1610,6 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
-module eventgrid 'modules/app/eventgrid.bicep' = {
-  name: eventGridSystemTopicName
-  scope: resourceGroup()
-  params: {
-    name: eventGridSystemTopicName
-    location: location
-    storageAccountId: storage.outputs.resourceId
-    queueName: queueName
-    blobContainerName: blobContainerName
-    tags: tags
-    userAssignedResourceId: managedIdentityModule.outputs.resourceId
-    enableMonitoring: enableMonitoring
-    logAnalyticsWorkspaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    enableTelemetry: enableTelemetry
-  }
-}
-
-module machineLearning 'modules/app/machinelearning.bicep' = if (orchestrationStrategy == 'prompt_flow') {
-  scope: resourceGroup()
-  name: take('module.machine-learning.${azureMachineLearningName}', 64)
-  params: {
-    workspaceName: azureMachineLearningName
-    location: location
-    tags: allTags
-    sku: 'Standard'
-    storageAccountId: storage.outputs.resourceId
-    applicationInsightsId: enableMonitoring ? monitoring!.outputs.applicationInsightsId : ''
-    azureOpenAIName: openai.outputs.name
-    azureAISearchName: databaseType == 'CosmosDB' ? search!.outputs.searchName : ''
-    azureAISearchEndpoint: databaseType == 'CosmosDB' ? search!.outputs.searchEndpoint : ''
-    azureOpenAIEndpoint: openai.outputs.endpoint
-    // WAF aligned parameters
-    enableTelemetry: enableTelemetry
-    userAssignedIdentityResourceId: managedIdentityModule.outputs.resourceId
-    logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    enablePrivateNetworking: enablePrivateNetworking
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : ''
-    privateDnsZoneResourceIds: enablePrivateNetworking
-      ? [
-          avmPrivateDnsZones[dnsZoneIndex.machinelearning]!.outputs.resourceId
-        ]
-      : []
-  }
-}
-
 //========== Deployment script to upload data ========== //
 module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = if (databaseType == 'PostgreSQL') {
   name: take('avm.res.resources.deployment-script.createIndex', 64)
@@ -1878,11 +1814,6 @@ output azureSearchUseIntegratedVectorizationEnabled bool = azureSearchUseIntegra
 
 @description('Maximum number of images sent per advanced image processing request.')
 output advancedImageProcessingMaxImagesOutput int = advancedImageProcessingMaxImages
-
-@description('Azure Machine Learning workspace name when using prompt_flow orchestration.')
-output azureMlWorkspaceName string = orchestrationStrategy == 'prompt_flow'
-  ? machineLearning!.outputs.workspaceName
-  : ''
 
 @description('Unique token for this solution deployment (short suffix).')
 output resourceToken string = solutionSuffix
