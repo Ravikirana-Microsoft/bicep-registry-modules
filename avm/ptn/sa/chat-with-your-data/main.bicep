@@ -975,23 +975,14 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-module search 'modules/core/search/search-services.bicep' = if (databaseType == 'CosmosDB') {
-  name: azureAISearchName
-  scope: resourceGroup()
+module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseType == 'CosmosDB') {
+  name: take('avm.res.search.search-service.${azureAISearchName}', 64)
   params: {
+    // Required parameters
     name: azureAISearchName
     location: location
     tags: allTags
     enableTelemetry: enableTelemetry
-    enableMonitoring: enableMonitoring
-
-    logAnalyticsWorkspaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    enablePrivateNetworking: enablePrivateNetworking
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : ''
-    privateDnsZoneResourceIds: enablePrivateNetworking
-      ? [avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId]
-      : []
-
     sku: azureSearchSku
     authOptions: {
       aadOrApiKey: {
@@ -1006,8 +997,35 @@ module search 'modules/core/search/search-services.bicep' = if (databaseType == 
     }
     partitionCount: 1
     replicaCount: 1
-    semanticSearch: azureSearchUseSemanticSearch ? 'free' : 'disabled'
-    userAssignedResourceId: managedIdentityModule.outputs.resourceId
+    semanticSearch: 'disabled'
+
+    // WAF aligned configuration for Monitoring
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
+
+    // WAF aligned configuration for Private Networking
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            name: 'pep-search-${solutionSuffix}'
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  name: 'search-dns-zone-group-blob'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId
+                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
+                }
+              ]
+            }
+            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            service: 'searchService'
+          }
+        ]
+      : []
+
+    // Configure managed identity: user-assigned for production, system-assigned allowed for local development with integrated vectorization
+    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [managedIdentityModule.outputs.resourceId] }
     roleAssignments: concat(
       [
         {
@@ -1046,7 +1064,6 @@ module search 'modules/core/search/search-services.bicep' = if (databaseType == 
           ]
         : []
     )
-    enableSystemAssigned: true
   }
 }
 
@@ -1075,190 +1092,115 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
 }
 
 var postgresDBFqdn = '${postgresResourceName}.postgres.database.azure.com'
-
-// Site configuration
-var webAppSiteConfig = {
-  linuxFxVersion: hostingModel == 'container'
-    ? 'DOCKER|${registryName}.azurecr.io/rag-webapp:${appversion}'
-    : 'python|3.11'
-  appCommandLine: ''
-  healthCheckPath: ''
-  cors: {
-    allowedOrigins: []
-  }
-  minTlsVersion: '1.2'
-}
-
-// Common app settings for all Web & Admin Apps
-var commonConfigs = union(
-  {
-    AZURE_BLOB_ACCOUNT_NAME: storageAccountName
-    AZURE_BLOB_CONTAINER_NAME: blobContainerName
-    AZURE_FORM_RECOGNIZER_ENDPOINT: formrecognizer.outputs.endpoint
-    AZURE_COMPUTER_VISION_ENDPOINT: useAdvancedImageProcessing ? computerVision!.outputs.endpoint : ''
-    AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_API_VERSION: computerVisionVectorizeImageApiVersion
-    AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_MODEL_VERSION: computerVisionVectorizeImageModelVersion
-    AZURE_CONTENT_SAFETY_ENDPOINT: contentsafety.outputs.endpoint
-    AZURE_KEY_VAULT_ENDPOINT: keyvault.outputs.uri
-    AZURE_OPENAI_RESOURCE: azureOpenAIResourceName
-    AZURE_OPENAI_MODEL: azureOpenAIModel
-    AZURE_OPENAI_MODEL_NAME: azureOpenAIModelName
-    AZURE_OPENAI_MODEL_VERSION: azureOpenAIModelVersion
-    AZURE_OPENAI_TEMPERATURE: azureOpenAITemperature
-    AZURE_OPENAI_TOP_P: azureOpenAITopP
-    AZURE_OPENAI_MAX_TOKENS: azureOpenAIMaxTokens
-    AZURE_OPENAI_STOP_SEQUENCE: azureOpenAIStopSequence
-    AZURE_OPENAI_SYSTEM_MESSAGE: azureOpenAISystemMessage
-    AZURE_OPENAI_API_VERSION: azureOpenAIApiVersion
-    AZURE_OPENAI_STREAM: azureOpenAIStream
-    AZURE_OPENAI_EMBEDDING_MODEL: azureOpenAIEmbeddingModel
-    AZURE_OPENAI_EMBEDDING_MODEL_NAME: azureOpenAIEmbeddingModelName
-    AZURE_OPENAI_EMBEDDING_MODEL_VERSION: azureOpenAIEmbeddingModelVersion
-    USE_ADVANCED_IMAGE_PROCESSING: useAdvancedImageProcessing ? 'true' : 'false'
-    ORCHESTRATION_STRATEGY: orchestrationStrategy
-    CONVERSATION_FLOW: conversationFlow
-    LOGLEVEL: logLevel
-    DATABASE_TYPE: databaseType
-    MANAGED_IDENTITY_CLIENT_ID: managedIdentityModule.outputs.clientId
-    MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
-    APP_ENV: appEnvironment
-  },
-  databaseType == 'CosmosDB'
-    ? {
-        AZURE_COSMOSDB_ACCOUNT_NAME: azureCosmosDBAccountName
-        AZURE_COSMOSDB_DATABASE_NAME: cosmosDbName
-        AZURE_COSMOSDB_CONVERSATIONS_CONTAINER_NAME: cosmosDbContainerName
-        AZURE_COSMOSDB_ENABLE_FEEDBACK: 'true'
-        AZURE_SEARCH_SERVICE: 'https://${azureAISearchName}.search.windows.net'
-        AZURE_SEARCH_INDEX: azureSearchIndex
-        AZURE_SEARCH_USE_SEMANTIC_SEARCH: azureSearchUseSemanticSearch ? 'true' : 'false'
-        AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG: azureSearchSemanticSearchConfig
-        AZURE_SEARCH_INDEX_IS_PRECHUNKED: azureSearchIndexIsPrechunked
-        AZURE_SEARCH_TOP_K: azureSearchTopK
-        AZURE_SEARCH_ENABLE_IN_DOMAIN: azureSearchEnableInDomain
-        AZURE_SEARCH_FILENAME_COLUMN: azureSearchFilenameColumn
-        AZURE_SEARCH_FILTER: azureSearchFilter
-        AZURE_SEARCH_FIELDS_ID: azureSearchFieldId
-        AZURE_SEARCH_CONTENT_COLUMN: azureSearchContentColumn
-        AZURE_SEARCH_CONTENT_VECTOR_COLUMN: azureSearchVectorColumn
-        AZURE_SEARCH_TITLE_COLUMN: azureSearchTitleColumn
-        AZURE_SEARCH_FIELDS_METADATA: azureSearchFieldsMetadata
-        AZURE_SEARCH_SOURCE_COLUMN: azureSearchSourceColumn
-        AZURE_SEARCH_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchTextColumn : ''
-        AZURE_SEARCH_LAYOUT_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchLayoutTextColumn : ''
-        AZURE_SEARCH_CHUNK_COLUMN: azureSearchChunkColumn
-        AZURE_SEARCH_OFFSET_COLUMN: azureSearchOffsetColumn
-        AZURE_SEARCH_URL_COLUMN: azureSearchUrlColumn
-        AZURE_SEARCH_CONVERSATIONS_LOG_INDEX: azureSearchConversationLogIndex
-        AZURE_SEARCH_DATASOURCE_NAME: azureSearchDatasource
-        AZURE_SEARCH_INDEXER_NAME: azureSearchIndexer
-        AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION: azureSearchUseIntegratedVectorization ? 'true' : 'false'
-      }
-    : databaseType == 'PostgreSQL'
-        ? {
-            AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
-            AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
-            AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
-          }
-        : {},
-  {
-    SCM_DO_BUILD_DURING_DEPLOYMENT: hostingModel == 'container' ? 'true' : 'false'
-    ENABLE_ORYX_BUILD: hostingModel == 'container' ? false : true
-    AZURE_RESOURCE_GROUP: resourceGroup().name
-    AZURE_SUBSCRIPTION_ID: subscription().subscriptionId
-  },
-  hostingModel == 'code' ? { PYTHON_ENABLE_GUNICORN_MULTIWORKERS: 'true' } : {}
-)
-
-// Build the configs array expected by the child module (appsettings config)
-var webSiteAppConfigs = [
-  {
-    name: 'appsettings'
-    properties: union(
-      commonConfigs,
-      {
-        AZURE_SPEECH_SERVICE_NAME: speechServiceName
-        AZURE_SPEECH_SERVICE_REGION: location
-        AZURE_SPEECH_RECOGNIZER_LANGUAGES: recognizedLanguages
-        AZURE_SPEECH_REGION_ENDPOINT: speechService.outputs.endpoint
-        ADVANCED_IMAGE_PROCESSING_MAX_IMAGES: string(advancedImageProcessingMaxImages)
-        OPEN_AI_FUNCTIONS_SYSTEM_PROMPT: openAIFunctionsSystemPrompt
-        SEMANTIC_KERNEL_SYSTEM_PROMPT: semanticKernelSystemPrompt
-        AZURE_CLIENT_ID: managedIdentityModule.outputs.clientId // Required so LangChain AzureSearch vector store authenticates with this user-assigned managed identity
-        SCM_DO_BUILD_DURING_DEPLOYMENT: hostingModel == 'container' ? 'true' : 'false'
-        ENABLE_ORYX_BUILD: hostingModel == 'container' ? false : true
-        AZURE_RESOURCE_GROUP: resourceGroup().name
-        AZURE_SUBSCRIPTION_ID: subscription().subscriptionId
-      },
-      hostingModel == 'code' ? { PYTHON_ENABLE_GUNICORN_MULTIWORKERS: 'true' } : {}
-    )
-    applicationInsightResourceId: enableMonitoring ? monitoring!.outputs.appInsightsId : null
-    storageAccountResourceId: null
-    storageAccountUseIdentityAuthentication: null
-    retainCurrentAppSettings: true
-  }
-]
-
-module web './modules/core/host/appservice.bicep' = {
+module web 'modules/app/web.bicep' = {
   name: take('module.web.site.${websiteName}${hostingModel == 'container' ? '-docker' : ''}', 64)
+  scope: resourceGroup()
   params: {
+    // keep existing params but make them conditional so this single module covers both code and container hosting
     name: hostingModel == 'container' ? '${websiteName}-docker' : websiteName
     location: location
     tags: union(tags, { 'azd-service-name': hostingModel == 'container' ? 'web-docker' : 'web' })
-    allTags: allTags
     kind: hostingModel == 'container' ? 'app,linux,container' : 'app,linux'
     serverFarmResourceId: webServerFarm.outputs.resourceId
-    siteConfig: webAppSiteConfig
-    configs: webSiteAppConfigs
+    // runtime settings apply only for code-hosted apps
+    runtimeName: hostingModel == 'code' ? 'python' : null
+    runtimeVersion: hostingModel == 'code' ? '3.11' : null
+    // docker-specific fields apply only for container-hosted apps
+    dockerFullImageName: hostingModel == 'container' ? '${registryName}.azurecr.io/rag-webapp:${appversion}' : null
+    useDocker: hostingModel == 'container' ? true : false
+    allowedOrigins: []
+    appCommandLine: ''
+    userAssignedIdentityResourceId: managedIdentityModule.outputs.resourceId
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : ''
-    publicNetworkAccess: 'Enabled'
-    privateEndpoints: []
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        managedIdentityModule.outputs.resourceId
-      ]
-    }
+    publicNetworkAccess: 'Enabled' // Always enabling public network access
+    applicationInsightsName: enableMonitoring ? monitoring!.outputs.applicationInsightsName : ''
+    appSettings: union(
+      {
+        AZURE_BLOB_ACCOUNT_NAME: storageAccountName
+        AZURE_BLOB_CONTAINER_NAME: blobContainerName
+        AZURE_FORM_RECOGNIZER_ENDPOINT: formrecognizer.outputs.endpoint
+        AZURE_COMPUTER_VISION_ENDPOINT: useAdvancedImageProcessing ? computerVision!.outputs.endpoint : ''
+        AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_API_VERSION: computerVisionVectorizeImageApiVersion
+        AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_MODEL_VERSION: computerVisionVectorizeImageModelVersion
+        AZURE_CONTENT_SAFETY_ENDPOINT: contentsafety.outputs.endpoint
+        AZURE_KEY_VAULT_ENDPOINT: keyvault.outputs.uri
+        AZURE_OPENAI_RESOURCE: azureOpenAIResourceName
+        AZURE_OPENAI_MODEL: azureOpenAIModel
+        AZURE_OPENAI_MODEL_NAME: azureOpenAIModelName
+        AZURE_OPENAI_MODEL_VERSION: azureOpenAIModelVersion
+        AZURE_OPENAI_TEMPERATURE: azureOpenAITemperature
+        AZURE_OPENAI_TOP_P: azureOpenAITopP
+        AZURE_OPENAI_MAX_TOKENS: azureOpenAIMaxTokens
+        AZURE_OPENAI_STOP_SEQUENCE: azureOpenAIStopSequence
+        AZURE_OPENAI_SYSTEM_MESSAGE: azureOpenAISystemMessage
+        AZURE_OPENAI_API_VERSION: azureOpenAIApiVersion
+        AZURE_OPENAI_STREAM: azureOpenAIStream
+        AZURE_OPENAI_EMBEDDING_MODEL: azureOpenAIEmbeddingModel
+        AZURE_OPENAI_EMBEDDING_MODEL_NAME: azureOpenAIEmbeddingModelName
+        AZURE_OPENAI_EMBEDDING_MODEL_VERSION: azureOpenAIEmbeddingModelVersion
+        AZURE_SPEECH_SERVICE_NAME: speechServiceName
+        AZURE_SPEECH_SERVICE_REGION: location
+        AZURE_SPEECH_RECOGNIZER_LANGUAGES: recognizedLanguages
+        AZURE_SPEECH_REGION_ENDPOINT: speechService.outputs.endpoint
+        USE_ADVANCED_IMAGE_PROCESSING: useAdvancedImageProcessing ? 'true' : 'false'
+        ADVANCED_IMAGE_PROCESSING_MAX_IMAGES: string(advancedImageProcessingMaxImages)
+        ORCHESTRATION_STRATEGY: orchestrationStrategy
+        CONVERSATION_FLOW: conversationFlow
+        LOGLEVEL: logLevel
+        DATABASE_TYPE: databaseType
+        OPEN_AI_FUNCTIONS_SYSTEM_PROMPT: openAIFunctionsSystemPrompt
+        SEMANTIC_KERNEL_SYSTEM_PROMPT: semanticKernelSystemPrompt
+        MANAGED_IDENTITY_CLIENT_ID: managedIdentityModule.outputs.clientId
+        MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
+        AZURE_CLIENT_ID: managedIdentityModule.outputs.clientId // Required so LangChain AzureSearch vector store authenticates with this user-assigned managed identity
+        APP_ENV: appEnvironment
+      },
+      databaseType == 'CosmosDB'
+        ? {
+            AZURE_COSMOSDB_ACCOUNT_NAME: azureCosmosDBAccountName
+            AZURE_COSMOSDB_DATABASE_NAME: cosmosDbName
+            AZURE_COSMOSDB_CONVERSATIONS_CONTAINER_NAME: cosmosDbContainerName
+            AZURE_COSMOSDB_ENABLE_FEEDBACK: 'true'
+            AZURE_SEARCH_USE_SEMANTIC_SEARCH: azureSearchUseSemanticSearch ? 'true' : 'false'
+            AZURE_SEARCH_SERVICE: 'https://${azureAISearchName}.search.windows.net'
+            AZURE_SEARCH_INDEX: azureSearchIndex
+            AZURE_SEARCH_CONVERSATIONS_LOG_INDEX: azureSearchConversationLogIndex
+            AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG: azureSearchSemanticSearchConfig
+            AZURE_SEARCH_INDEX_IS_PRECHUNKED: azureSearchIndexIsPrechunked
+            AZURE_SEARCH_TOP_K: azureSearchTopK
+            AZURE_SEARCH_ENABLE_IN_DOMAIN: azureSearchEnableInDomain
+            AZURE_SEARCH_FILENAME_COLUMN: azureSearchFilenameColumn
+            AZURE_SEARCH_FILTER: azureSearchFilter
+            AZURE_SEARCH_FIELDS_ID: azureSearchFieldId
+            AZURE_SEARCH_CONTENT_COLUMN: azureSearchContentColumn
+            AZURE_SEARCH_CONTENT_VECTOR_COLUMN: azureSearchVectorColumn
+            AZURE_SEARCH_TITLE_COLUMN: azureSearchTitleColumn
+            AZURE_SEARCH_FIELDS_METADATA: azureSearchFieldsMetadata
+            AZURE_SEARCH_SOURCE_COLUMN: azureSearchSourceColumn
+            AZURE_SEARCH_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchTextColumn : ''
+            AZURE_SEARCH_LAYOUT_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchLayoutTextColumn : ''
+            AZURE_SEARCH_CHUNK_COLUMN: azureSearchChunkColumn
+            AZURE_SEARCH_OFFSET_COLUMN: azureSearchOffsetColumn
+            AZURE_SEARCH_URL_COLUMN: azureSearchUrlColumn
+            AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION: azureSearchUseIntegratedVectorization ? 'true' : 'false'
+          }
+        : databaseType == 'PostgreSQL'
+            ? {
+                AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
+                AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
+                AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
+              }
+            : {}
+    )
   }
 }
 
-// Build the configs array expected by the child module (appsettings config)
-var adminWebAppConfigs = [
-  {
-    name: 'appsettings'
-    properties: union(commonConfigs, {
-      BACKEND_URL: 'https://${hostingModel == 'container' ? '${functionName}-docker' : functionName}.azurewebsites.net'
-      DOCUMENT_PROCESSING_QUEUE_NAME: queueName
-      FUNCTION_KEY: 'FUNCTION-KEY'
-      USE_KEY_VAULT: 'true'
-    })
-    applicationInsightResourceId: enableMonitoring ? monitoring!.outputs.appInsightsId : null
-    storageAccountResourceId: null
-    storageAccountUseIdentityAuthentication: null
-    retainCurrentAppSettings: true
-  }
-]
-
-// Site configuration
-var adminSiteConfig = {
-  linuxFxVersion: hostingModel == 'container'
-    ? 'DOCKER|${registryName}.azurecr.io/rag-adminwebapp:${appversion}'
-    : 'python|3.11'
-  appCommandLine: hostingModel == 'container'
-    ? ''
-    : 'python -m streamlit run Admin.py --server.port 8000 --server.address 0.0.0.0 --server.enableXsrfProtection false'
-  healthCheckPath: ''
-  cors: {
-    allowedOrigins: []
-  }
-  minTlsVersion: '1.2'
-}
-
-module adminweb './modules/core/host/appservice.bicep' = {
+module adminweb 'modules/app/adminweb.bicep' = {
   name: take('module.web.site.${adminWebsiteName}${hostingModel == 'container' ? '-docker' : ''}', 64)
+  scope: resourceGroup()
   params: {
     name: hostingModel == 'container' ? '${adminWebsiteName}-docker' : adminWebsiteName
     location: location
@@ -1266,20 +1208,93 @@ module adminweb './modules/core/host/appservice.bicep' = {
     allTags: allTags
     kind: hostingModel == 'container' ? 'app,linux,container' : 'app,linux'
     serverFarmResourceId: webServerFarm.outputs.resourceId
-    siteConfig: adminSiteConfig
-    configs: adminWebAppConfigs
+    // runtime settings apply only for code-hosted apps
+    runtimeName: hostingModel == 'code' ? 'python' : null
+    runtimeVersion: hostingModel == 'code' ? '3.11' : null
+    // docker-specific fields apply only for container-hosted apps
+    dockerFullImageName: hostingModel == 'container' ? '${registryName}.azurecr.io/rag-adminwebapp:${appversion}' : null
+    useDocker: hostingModel == 'container' ? true : false
+    userAssignedIdentityResourceId: managedIdentityModule.outputs.resourceId
+    // App settings
+    appSettings: union(
+      {
+        AZURE_BLOB_ACCOUNT_NAME: storageAccountName
+        AZURE_BLOB_CONTAINER_NAME: blobContainerName
+        AZURE_FORM_RECOGNIZER_ENDPOINT: formrecognizer.outputs.endpoint
+        AZURE_COMPUTER_VISION_ENDPOINT: useAdvancedImageProcessing ? computerVision!.outputs.endpoint : ''
+        AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_API_VERSION: computerVisionVectorizeImageApiVersion
+        AZURE_COMPUTER_VISION_VECTORIZE_IMAGE_MODEL_VERSION: computerVisionVectorizeImageModelVersion
+        AZURE_CONTENT_SAFETY_ENDPOINT: contentsafety.outputs.endpoint
+        AZURE_KEY_VAULT_ENDPOINT: keyvault.outputs.uri
+        AZURE_OPENAI_RESOURCE: azureOpenAIResourceName
+        AZURE_OPENAI_MODEL: azureOpenAIModel
+        AZURE_OPENAI_MODEL_NAME: azureOpenAIModelName
+        AZURE_OPENAI_MODEL_VERSION: azureOpenAIModelVersion
+        AZURE_OPENAI_TEMPERATURE: azureOpenAITemperature
+        AZURE_OPENAI_TOP_P: azureOpenAITopP
+        AZURE_OPENAI_MAX_TOKENS: azureOpenAIMaxTokens
+        AZURE_OPENAI_STOP_SEQUENCE: azureOpenAIStopSequence
+        AZURE_OPENAI_SYSTEM_MESSAGE: azureOpenAISystemMessage
+        AZURE_OPENAI_API_VERSION: azureOpenAIApiVersion
+        AZURE_OPENAI_STREAM: azureOpenAIStream
+        AZURE_OPENAI_EMBEDDING_MODEL: azureOpenAIEmbeddingModel
+        AZURE_OPENAI_EMBEDDING_MODEL_NAME: azureOpenAIEmbeddingModelName
+        AZURE_OPENAI_EMBEDDING_MODEL_VERSION: azureOpenAIEmbeddingModelVersion
+
+        USE_ADVANCED_IMAGE_PROCESSING: useAdvancedImageProcessing ? 'true' : 'false'
+        BACKEND_URL: 'https://${hostingModel == 'container' ? '${functionName}-docker' : functionName}.azurewebsites.net'
+        DOCUMENT_PROCESSING_QUEUE_NAME: queueName
+        FUNCTION_KEY: 'FUNCTION-KEY'
+        ORCHESTRATION_STRATEGY: orchestrationStrategy
+        CONVERSATION_FLOW: conversationFlow
+        LOGLEVEL: logLevel
+        DATABASE_TYPE: databaseType
+        USE_KEY_VAULT: 'true'
+        MANAGED_IDENTITY_CLIENT_ID: managedIdentityModule.outputs.clientId
+        MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
+        APP_ENV: appEnvironment
+      },
+      databaseType == 'CosmosDB'
+        ? {
+            AZURE_SEARCH_SERVICE: 'https://${azureAISearchName}.search.windows.net'
+            AZURE_SEARCH_INDEX: azureSearchIndex
+            AZURE_SEARCH_USE_SEMANTIC_SEARCH: azureSearchUseSemanticSearch ? 'true' : 'false'
+            AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG: azureSearchSemanticSearchConfig
+            AZURE_SEARCH_INDEX_IS_PRECHUNKED: azureSearchIndexIsPrechunked
+            AZURE_SEARCH_TOP_K: azureSearchTopK
+            AZURE_SEARCH_ENABLE_IN_DOMAIN: azureSearchEnableInDomain
+            AZURE_SEARCH_FILENAME_COLUMN: azureSearchFilenameColumn
+            AZURE_SEARCH_FILTER: azureSearchFilter
+            AZURE_SEARCH_FIELDS_ID: azureSearchFieldId
+            AZURE_SEARCH_CONTENT_COLUMN: azureSearchContentColumn
+            AZURE_SEARCH_CONTENT_VECTOR_COLUMN: azureSearchVectorColumn
+            AZURE_SEARCH_TITLE_COLUMN: azureSearchTitleColumn
+            AZURE_SEARCH_FIELDS_METADATA: azureSearchFieldsMetadata
+            AZURE_SEARCH_SOURCE_COLUMN: azureSearchSourceColumn
+            AZURE_SEARCH_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchTextColumn : ''
+            AZURE_SEARCH_LAYOUT_TEXT_COLUMN: azureSearchUseIntegratedVectorization ? azureSearchLayoutTextColumn : ''
+            AZURE_SEARCH_CHUNK_COLUMN: azureSearchChunkColumn
+            AZURE_SEARCH_OFFSET_COLUMN: azureSearchOffsetColumn
+            AZURE_SEARCH_URL_COLUMN: azureSearchUrlColumn
+            AZURE_SEARCH_DATASOURCE_NAME: azureSearchDatasource
+            AZURE_SEARCH_INDEXER_NAME: azureSearchIndexer
+            AZURE_SEARCH_USE_INTEGRATED_VECTORIZATION: azureSearchUseIntegratedVectorization ? 'true' : 'false'
+          }
+        : databaseType == 'PostgreSQL'
+            ? {
+                AZURE_POSTGRESQL_HOST_NAME: postgresDBFqdn
+                AZURE_POSTGRESQL_DATABASE_NAME: postgresDBName
+                AZURE_POSTGRESQL_USER: managedIdentityModule.outputs.name
+              }
+            : {}
+    )
+    applicationInsightsName: enableMonitoring ? monitoring!.outputs.applicationInsightsName : ''
+    // WAF parameters
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : ''
-    publicNetworkAccess: 'Enabled'
-    privateEndpoints: []
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        managedIdentityModule.outputs.resourceId
-      ]
-    }
+    publicNetworkAccess: 'Enabled' // Always enabling public network access
   }
 }
 
@@ -1689,7 +1704,7 @@ var azureSpeechServiceInfo = string({
 var azureSearchServiceInfo = databaseType == 'CosmosDB'
   ? string({
       service_name: azureAISearchName
-      service: search!.outputs.searchEndpoint
+      service: search!.outputs.endpoint
       use_semantic_search: azureSearchUseSemanticSearch
       semantic_search_config: azureSearchSemanticSearchConfig
       index_is_prechunked: azureSearchIndexIsPrechunked
@@ -1801,10 +1816,10 @@ output backendUrlOutput string = backendUrl
 output azureWebJobsStorage string = function.outputs.AzureWebJobsStorage
 
 @description('Frontend web application URI.')
-output frontendWebsiteUri string = 'https://${web.outputs.defaultHostname}'
+output frontendWebsiteUri string = web.outputs.FRONTEND_API_URI
 
 @description('Admin web application URI.')
-output adminWebsiteUri string = 'https://${adminweb.outputs.defaultHostname}'
+output adminWebsiteUri string = adminweb.outputs.WEBSITE_ADMIN_URI
 
 @description('Configured log level for applications.')
 output configuredLogLevel string = logLevel
