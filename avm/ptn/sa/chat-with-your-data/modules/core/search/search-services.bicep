@@ -41,8 +41,6 @@ param userAssignedResourceId string = ''
 param roleAssignments array = []
 @description('Optional. Flag to enable a system-assigned managed identity for the Cognitive Services resource.')
 param enableSystemAssigned bool = false
-@description('Optional. Array of role assignments to apply to the system-assigned identity at the search service scope. Each item: { roleDefinitionId: "<GUID or built-in role definition id>" }')
-param systemAssignedRoleAssignments array = []
 
 // // Define DNS zone group configs as a variable
 // var privateDnsZoneGroupConfigs = [for zoneId in privateDnsZoneResourceIds: {
@@ -107,21 +105,6 @@ module avmSearch 'br/public:avm/res/search/search-service:0.11.1' = {
     roleAssignments: roleAssignments
   }
 }
-
-// --- System-assigned identity role assignments for local development with integrated vectorization (optional) --- //
-@description('Role assignments applied to the system-assigned identity via AVM module. Objects can include: roleDefinitionId (req), roleName, principalType, resourceId.')
-module systemAssignedIdentityRoleAssignments 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
-  for assignment in systemAssignedRoleAssignments: if (enableSystemAssigned && !empty(systemAssignedRoleAssignments)) {
-    name: take('avm.ptn.authorization.resource-role-assignment.${uniqueString(searchResourceName, assignment.roleDefinitionId, assignment.resourceId)}', 64)
-    params: {
-      roleDefinitionId: assignment.roleDefinitionId
-      principalId: avmSearch.outputs.systemAssignedMIPrincipalId
-      resourceId: assignment.resourceId
-      roleName: assignment.roleName
-      principalType: assignment.principalType
-    }
-  }
-]
 
 output searchName string = avmSearch.outputs.name
 output searchEndpoint string = avmSearch.outputs.endpoint
