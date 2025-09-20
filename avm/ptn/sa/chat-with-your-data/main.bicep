@@ -975,23 +975,14 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-module search 'modules/core/search/search-services.bicep' = if (databaseType == 'CosmosDB') {
-  name: azureAISearchName
-  scope: resourceGroup()
+module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseType == 'CosmosDB') {
+  name: take('avm.res.search.search-service.${azureAISearchName}', 64)
   params: {
+    // Required parameters
     name: azureAISearchName
     location: location
     tags: allTags
     enableTelemetry: enableTelemetry
-    enableMonitoring: enableMonitoring
-
-    logAnalyticsWorkspaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    enablePrivateNetworking: enablePrivateNetworking
-    subnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : ''
-    privateDnsZoneResourceIds: enablePrivateNetworking
-      ? [avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId]
-      : []
-
     sku: azureSearchSku
     authOptions: {
       aadOrApiKey: {
@@ -1006,8 +997,35 @@ module search 'modules/core/search/search-services.bicep' = if (databaseType == 
     }
     partitionCount: 1
     replicaCount: 1
-    semanticSearch: azureSearchUseSemanticSearch ? 'free' : 'disabled'
-    userAssignedResourceId: managedIdentityModule.outputs.resourceId
+    semanticSearch: 'disabled'
+
+    // WAF aligned configuration for Monitoring
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
+
+    // WAF aligned configuration for Private Networking
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            name: 'pep-search-${solutionSuffix}'
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  name: 'search-dns-zone-group-blob'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId
+                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
+                }
+              ]
+            }
+            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            service: 'searchService'
+          }
+        ]
+      : []
+
+    // Configure managed identity: user-assigned for production, system-assigned allowed for local development with integrated vectorization
+    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [managedIdentityModule.outputs.resourceId] }
     roleAssignments: concat(
       [
         {
@@ -1046,27 +1064,6 @@ module search 'modules/core/search/search-services.bicep' = if (databaseType == 
           ]
         : []
     )
-    enableSystemAssigned: true
-    systemAssignedRoleAssignments: [
-      {
-        resourceId: storage.outputs.resourceId
-        roleName: 'Storage Blob Data Contributor'
-        roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        resourceId: openai.outputs.resourceId
-        roleName: 'Cognitive Services User'
-        roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
-        principalType: 'ServicePrincipal'
-      }
-      {
-        resourceId: openai.outputs.resourceId
-        roleName: 'Cognitive Services OpenAI User'
-        roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
 }
 
@@ -1450,14 +1447,6 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
           ]
         : []
     )
-    systemAssignedRoleAssignments: [
-      {
-        resourceId: storage.outputs.resourceId
-        roleName: 'Storage Blob Data Contributor'
-        roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
@@ -1610,6 +1599,38 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
+var systemAssignedRoleAssignments = [
+  {
+    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
+    resourceId: storage.outputs.resourceId
+    roleName: 'Storage Blob Data Contributor'
+    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    principalType: 'ServicePrincipal'
+  }
+  {
+    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
+    resourceId: openai.outputs.resourceId
+    roleName: 'Cognitive Services User'
+    roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+    principalType: 'ServicePrincipal'
+  }
+  {
+    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
+    resourceId: openai.outputs.resourceId
+    roleName: 'Cognitive Services OpenAI User'
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    principalType: 'ServicePrincipal'
+  }
+]
+
+@description('Role assignments applied to the system-assigned identity via AVM module. Objects can include: roleDefinitionId (req), roleName, principalType, resourceId.')
+module systemAssignedIdentityRoleAssignments './modules/app/roleassignments.bicep' = {
+  name: take('module.resource-role-assignment.system-assigned', 64)
+  params: {
+    roleAssignments: systemAssignedRoleAssignments
+  }
+}
+
 //========== Deployment script to upload data ========== //
 module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = if (databaseType == 'PostgreSQL') {
   name: take('avm.res.resources.deployment-script.createIndex', 64)
@@ -1683,7 +1704,7 @@ var azureSpeechServiceInfo = string({
 var azureSearchServiceInfo = databaseType == 'CosmosDB'
   ? string({
       service_name: azureAISearchName
-      service: search!.outputs.searchEndpoint
+      service: search!.outputs.endpoint
       use_semantic_search: azureSearchUseSemanticSearch
       semantic_search_config: azureSearchSemanticSearchConfig
       index_is_prechunked: azureSearchIndexIsPrechunked
