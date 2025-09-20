@@ -393,6 +393,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   properties: {
     tags: {
       ...allTags
+      ...resourceGroup().tags
       TemplateName: 'CWYD'
       CreatedBy: createdBy
     }
@@ -630,13 +631,13 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
 
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : null
 
-    skuName: 'Standard_D2s_v3'
-    tier: 'GeneralPurpose'
+    skuName: enableScalability ? 'Standard_D2s_v3' : 'Standard_B1ms'
+    tier: enableScalability ? 'GeneralPurpose' : 'Burstable'
     storageSizeGB: 32
     version: '16'
     availabilityZone: 1
-    highAvailability: 'ZoneRedundant'
-    highAvailabilityZone: 2
+    highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
+    highAvailabilityZone: enableRedundancy ? 2 : -1
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking
