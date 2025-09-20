@@ -32,7 +32,6 @@ on:
       - "avm/ptn/sa/chat-with-your-data/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
