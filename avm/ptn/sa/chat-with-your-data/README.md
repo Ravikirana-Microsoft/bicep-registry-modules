@@ -117,6 +117,8 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     enableTelemetry: true
     location: '<location>'
     solutionName: 'scwydswaf001'
+    virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
+    virtualMachineAdminUsername: 'adminuser'
   }
 }
 ```
@@ -156,6 +158,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     },
     "solutionName": {
       "value": "scwydswaf001"
+    },
+    "virtualMachineAdminPassword": {
+      "value": "<virtualMachineAdminPassword>"
+    },
+    "virtualMachineAdminUsername": {
+      "value": "adminuser"
     }
   }
 }
@@ -179,6 +187,8 @@ param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
 param solutionName = 'scwydswaf001'
+param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
+param virtualMachineAdminUsername = 'adminuser'
 ```
 
 </details>
