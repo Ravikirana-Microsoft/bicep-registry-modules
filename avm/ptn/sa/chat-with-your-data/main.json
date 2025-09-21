@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11308622205146230621"
+      "templateHash": "7091050592622487417"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -716,7 +716,7 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": "[shallowMerge(createArray(variables('allTags'), resourceGroup().tags, createObject('TemplateName', 'CWYD', 'CreatedBy', parameters('createdBy'))))]"
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, variables('allTags'), createObject('TemplateName', 'CWYD', 'CreatedBy', parameters('createdBy'))))]"
       }
     },
     "avmTelemetry": {
@@ -32020,9 +32020,7 @@
           "replicaCount": {
             "value": 1
           },
-          "semanticSearch": {
-            "value": "disabled"
-          },
+          "semanticSearch": "[if(parameters('azureSearchUseSemanticSearch'), createObject('value', 'free'), createObject('value', 'disabled'))]",
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('monitoring').outputs.logAnalyticsWorkspaceId.value))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-search-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'search-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').searchService)).outputs.resourceId.value))), 'subnetResourceId', reference('network').outputs.subnetPrivateEndpointsResourceId.value, 'service', 'searchService'))), createObject('value', createArray()))]",
@@ -56396,29 +56394,7 @@
         "mode": "Incremental",
         "parameters": {
           "roleAssignments": {
-            "value": [
-              {
-                "principalId": "[reference('formrecognizer').outputs.systemAssignedMIPrincipalId.value]",
-                "resourceId": "[reference('storage').outputs.resourceId.value]",
-                "roleName": "Storage Blob Data Contributor",
-                "roleDefinitionId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('formrecognizer').outputs.systemAssignedMIPrincipalId.value]",
-                "resourceId": "[reference('openai').outputs.resourceId.value]",
-                "roleName": "Cognitive Services User",
-                "roleDefinitionId": "a97b65f3-24c7-4388-baec-2e87135dc908",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "principalId": "[reference('formrecognizer').outputs.systemAssignedMIPrincipalId.value]",
-                "resourceId": "[reference('openai').outputs.resourceId.value]",
-                "roleName": "Cognitive Services OpenAI User",
-                "roleDefinitionId": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
-                "principalType": "ServicePrincipal"
-              }
-            ]
+            "value": "[union(if(equals(parameters('databaseType'), 'CosmosDB'), createArray(createObject('principalId', reference('search').outputs.systemAssignedMIPrincipalId.value, 'resourceId', reference('storage').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('search').outputs.systemAssignedMIPrincipalId.value, 'resourceId', reference('openai').outputs.resourceId.value, 'roleName', 'Cognitive Services User', 'roleDefinitionId', 'a97b65f3-24c7-4388-baec-2e87135dc908', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('search').outputs.systemAssignedMIPrincipalId.value, 'resourceId', reference('openai').outputs.resourceId.value, 'roleName', 'Cognitive Services OpenAI User', 'roleDefinitionId', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', 'principalType', 'ServicePrincipal')), createArray()), createArray(createObject('principalId', reference('formrecognizer').outputs.systemAssignedMIPrincipalId.value, 'resourceId', reference('formrecognizer').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal')))]"
           }
         },
         "template": {
@@ -56700,6 +56676,7 @@
       "dependsOn": [
         "formrecognizer",
         "openai",
+        "search",
         "storage"
       ],
       "metadata": {

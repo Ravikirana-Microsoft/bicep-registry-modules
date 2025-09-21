@@ -392,8 +392,8 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
     tags: {
-      ...allTags
       ...resourceGroup().tags
+      ...allTags
       TemplateName: 'CWYD'
       CreatedBy: createdBy
     }
@@ -998,7 +998,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
     }
     partitionCount: 1
     replicaCount: 1
-    semanticSearch: 'disabled'
+    semanticSearch: azureSearchUseSemanticSearch ? 'free' : 'disabled'
 
     // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId }] : []
@@ -1600,29 +1600,42 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
-var systemAssignedRoleAssignments = [
-  {
-    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
-    resourceId: storage.outputs.resourceId
-    roleName: 'Storage Blob Data Contributor'
-    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    principalType: 'ServicePrincipal'
-  }
-  {
-    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
-    resourceId: openai.outputs.resourceId
-    roleName: 'Cognitive Services User'
-    roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
-    principalType: 'ServicePrincipal'
-  }
-  {
-    principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
-    resourceId: openai.outputs.resourceId
-    roleName: 'Cognitive Services OpenAI User'
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'ServicePrincipal'
-  }
-]
+var systemAssignedRoleAssignments = union(
+  databaseType == 'CosmosDB'
+    ? [
+        {
+          principalId: search.outputs.systemAssignedMIPrincipalId
+          resourceId: storage.outputs.resourceId
+          roleName: 'Storage Blob Data Contributor'
+          roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+          principalType: 'ServicePrincipal'
+        }
+        {
+          principalId: search.outputs.systemAssignedMIPrincipalId
+          resourceId: openai.outputs.resourceId
+          roleName: 'Cognitive Services User'
+          roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
+          principalType: 'ServicePrincipal'
+        }
+        {
+          principalId: search.outputs.systemAssignedMIPrincipalId
+          resourceId: openai.outputs.resourceId
+          roleName: 'Cognitive Services OpenAI User'
+          roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+          principalType: 'ServicePrincipal'
+        }
+      ]
+    : [],
+  [
+    {
+      principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
+      resourceId: formrecognizer.outputs.resourceId
+      roleName: 'Storage Blob Data Contributor'
+      roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+      principalType: 'ServicePrincipal'
+    }
+  ]
+)
 
 @description('Role assignments applied to the system-assigned identity via AVM module. Objects can include: roleDefinitionId (req), roleName, principalType, resourceId.')
 module systemAssignedIdentityRoleAssignments './modules/app/roleassignments.bicep' = {
