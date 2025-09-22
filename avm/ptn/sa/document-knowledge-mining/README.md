@@ -54,7 +54,6 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2023-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
 | `Microsoft.KubernetesConfiguration/extensions` | 2022-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions)</li></ul> |
 | `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2023-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
@@ -74,10 +73,10 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
@@ -93,8 +92,8 @@ This module contains the resources required to deploy the [Document Knowledge Mi
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.Resources/tags` | 2021-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/tags)</li></ul> |
-| `Microsoft.Search/searchServices` | 2024-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices)</li></ul> |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources)</li></ul> |
+| `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
 | `Microsoft.SecurityInsights/onboardingStates` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
@@ -117,211 +116,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining:<version>`.
 
-- [Document Knowledge Mining Solution - WAF Aligned Test](#example-1-document-knowledge-mining-solution---waf-aligned-test)
-- [Document Knowledge Mining Solution - Defaults Test](#example-2-document-knowledge-mining-solution---defaults-test)
-- [Document Knowledge Mining Solution - WAF Aligned Test](#example-3-document-knowledge-mining-solution---waf-aligned-test)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Document Knowledge Mining Solution - WAF Aligned Test_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
-This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  name: 'documentKnowledgeMiningDeployment'
-  params: {
-    // Required parameters
-    aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    enableMonitoring: true
-    enablePrivateNetworking: true
-    enableRedundancy: false
-    enableScalability: false
-    // Non-required parameters
-    createdBy: 'AVM_Pipeline'
-    enableTelemetry: true
-    location: '<location>'
-    vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'adminuser'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiDeploymentsLocation": {
-      "value": "<aiDeploymentsLocation>"
-    },
-    "enableMonitoring": {
-      "value": true
-    },
-    "enablePrivateNetworking": {
-      "value": true
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    // Non-required parameters
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "vmAdminPassword": {
-      "value": "<vmAdminPassword>"
-    },
-    "vmAdminUsername": {
-      "value": "adminuser"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
-
-// Required parameters
-param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-param enableMonitoring = true
-param enablePrivateNetworking = true
-param enableRedundancy = false
-param enableScalability = false
-// Non-required parameters
-param createdBy = 'AVM_Pipeline'
-param enableTelemetry = true
-param location = '<location>'
-param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'adminuser'
-```
-
-</details>
-<p>
-
-### Example 2: _Document Knowledge Mining Solution - Defaults Test_
-
-This test deploys the Document Knowledge Mining Solution with sandbox parameters to validate basic functionality.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  name: 'documentKnowledgeMiningDeployment'
-  params: {
-    // Required parameters
-    aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    enableMonitoring: true
-    enablePrivateNetworking: false
-    enableRedundancy: false
-    enableScalability: false
-    // Non-required parameters
-    createdBy: 'AVM_Pipeline'
-    enableTelemetry: true
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiDeploymentsLocation": {
-      "value": "<aiDeploymentsLocation>"
-    },
-    "enableMonitoring": {
-      "value": true
-    },
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    // Non-required parameters
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
-
-// Required parameters
-param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-param enableMonitoring = true
-param enablePrivateNetworking = false
-param enableRedundancy = false
-param enableScalability = false
-// Non-required parameters
-param createdBy = 'AVM_Pipeline'
-param enableTelemetry = true
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 3: _Document Knowledge Mining Solution - WAF Aligned Test_
-
-This test deploys the Document Knowledge Mining Solution with Well-Architected Framework aligned parameters to validate enhanced security, reliability, and scalability features.
+This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
 
 <details>
@@ -423,6 +223,100 @@ param vmAdminUsername = 'adminuser'
 </details>
 <p>
 
+### Example 2: _Sandbox configuration with default parameter values_
+
+This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  name: 'documentKnowledgeMiningDeployment'
+  params: {
+    // Required parameters
+    aiDeploymentsLocation: '<aiDeploymentsLocation>'
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enableRedundancy: false
+    enableScalability: false
+    // Non-required parameters
+    createdBy: 'AVM_Pipeline'
+    enableTelemetry: true
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiDeploymentsLocation": {
+      "value": "<aiDeploymentsLocation>"
+    },
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    // Non-required parameters
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
+
+// Required parameters
+param aiDeploymentsLocation = '<aiDeploymentsLocation>'
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enableRedundancy = false
+param enableScalability = false
+// Non-required parameters
+param createdBy = 'AVM_Pipeline'
+param enableTelemetry = true
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -497,7 +391,7 @@ Created by user name.
 
 - Required: No
 - Type: string
-- Default: `[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]`
+- Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
 
 ### Parameter: `embeddingModelCapacity`
 
@@ -674,7 +568,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
 | `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.15.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/container-service/managed-cluster:0.10.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |
@@ -686,8 +580,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network/subnet:0.1.2` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
-| `br/public:avm/res/search/search-service:0.9.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.20.0` | Remote reference |
+| `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

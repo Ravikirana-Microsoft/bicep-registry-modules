@@ -389,7 +389,7 @@ The Container Image Tag to deploy on the webapp.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
+- Default: `'latest_waf_2025-09-18_794'`
 
 ### Parameter: `containerRegistryHostname`
 
@@ -413,7 +413,7 @@ Created by user name.
 
 - Required: No
 - Type: string
-- Default: `[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]`
+- Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
 
 ### Parameter: `embeddingDeploymentCapacity`
 
