@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "14288193136198609746"
+      "templateHash": "9622982840953638258"
     },
     "name": "Build-your-own-copilot-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Build-your-own-copilot-Solution-Accelerator](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -185,7 +185,7 @@
     },
     "containerImageTag": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "latest_waf_2025-09-18_794",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the webapp."
       }
@@ -236,7 +236,7 @@
     },
     "createdBy": {
       "type": "string",
-      "defaultValue": "[if(empty(deployer().userPrincipalName), '', split(deployer().userPrincipalName, '@')[0])]",
+      "defaultValue": "[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]",
       "metadata": {
         "description": "Optional. Created by user name."
       }
@@ -4826,7 +4826,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "7148802692072070901"
+              "templateHash": "13658893118858517408"
             }
           },
           "parameters": {
@@ -5104,7 +5104,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.37.4.10188",
-                      "templateHash": "13574199106336462976"
+                      "templateHash": "3643037663266443921"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -5447,7 +5447,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "10614618227931117456"
+                              "templateHash": "10288816228901798091"
                             }
                           },
                           "definitions": {
@@ -8015,6 +8015,9 @@
                               "type": "array",
                               "items": {
                                 "$ref": "#/definitions/subnetOutputType"
+                              },
+                              "metadata": {
+                                "description": "The subnet & NSG details."
                               },
                               "copy": {
                                 "count": "[length(parameters('subnets'))]",
@@ -11153,7 +11156,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.37.4.10188",
-                              "templateHash": "5510741664150901798"
+                              "templateHash": "5163069292006855204"
                             }
                           },
                           "definitions": {
@@ -21346,30 +21349,51 @@
                           "outputs": {
                             "resourceId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the deployed jumpbox virtual machine."
+                              },
                               "value": "[reference('vm').outputs.resourceId.value]"
                             },
                             "name": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The name of the deployed jumpbox virtual machine."
+                              },
                               "value": "[reference('vm').outputs.name.value]"
                             },
                             "location": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The location where the jumpbox virtual machine is deployed."
+                              },
                               "value": "[reference('vm').outputs.location.value]"
                             },
                             "subnetId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the jumpbox subnet."
+                              },
                               "value": "[reference('subnetResource').outputs.resourceId.value]"
                             },
                             "subnetName": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The name of the jumpbox subnet."
+                              },
                               "value": "[reference('subnetResource').outputs.name.value]"
                             },
                             "nsgId": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the jumpbox network security group."
+                              },
                               "value": "[reference('nsg').outputs.resourceId.value]"
                             },
                             "nsgName": {
                               "type": "string",
+                              "metadata": {
+                                "description": "The name of the jumpbox network security group."
+                              },
                               "value": "[reference('nsg').outputs.name.value]"
                             }
                           }
@@ -28435,9 +28459,6 @@
           "customSubDomainName": {
             "value": "[variables('aiFoundryAiServicesResourceName')]"
           },
-          "apiProperties": {
-            "value": {}
-          },
           "networkAcls": {
             "value": {
               "defaultAction": "Allow",
@@ -31927,9 +31948,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "network",
         "userAssignedIdentity"
@@ -41810,8 +41831,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "keyvault",
         "network",
         "userAssignedIdentity"
@@ -45301,6 +45322,7 @@
                 "maintenanceConfigurationId": "[if(variables('shouldConfigureMaintenance'), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', variables('defaultMaintenanceConfigName')), null())]",
                 "zoneRedundant": "[if(parameters('enableRedundancy'), true(), false())]",
                 "availabilityZone": -1,
+                "requestedBackupStorageRedundancy": "[if(parameters('enableRedundancy'), 'Zone', null())]",
                 "collation": "SQL_Latin1_General_CP1_CI_AS",
                 "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
                 "licenseType": "LicenseIncluded",
