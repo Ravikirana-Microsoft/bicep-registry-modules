@@ -75,9 +75,6 @@ var adminWebsiteName string = '${websiteName}-admin'
 @description('Name of Application Insights.')
 var applicationInsightsName string = 'appi-${solutionSuffix}'
 
-@description('Name of the Workbook.')
-var workbookDisplayName string = 'workbook-${solutionSuffix}'
-
 @description('Optional. Use semantic search.')
 param azureSearchUseSemanticSearch bool = false
 
@@ -317,9 +314,6 @@ param logLevel string = 'INFO'
 @description('Optional. List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages.')
 param recognizedLanguages string = 'en-US,fr-FR,de-DE,it-IT'
 
-@description('Optional. Azure Machine Learning Name.')
-var azureMachineLearningName string = 'mlw-${solutionSuffix}'
-
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
@@ -356,7 +350,6 @@ var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-// var tags = { 'azd-env-name': solutionName }
 var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/waf-avm/'
 var appversion = 'latest' // Update GIT deployment branch
 var registryName = 'cwydcontainerregpk' // Update Registry name
@@ -460,9 +453,9 @@ module network 'modules/network.bicep' = if (enablePrivateNetworking) {
   params: {
     resourcesName: networkResourceName
     logAnalyticsWorkSpaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
-    vmAdminUsername: virtualMachineAdminUsername ?? 'JumpboxAdminUser'
-    vmAdminPassword: virtualMachineAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
-    vmSize: vmSize ?? 'Standard_DS2_v2' // Default VM size
+    vmAdminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
+    vmAdminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
+    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
     location: location
     tags: allTags
     enableTelemetry: enableTelemetry
@@ -507,7 +500,6 @@ var dnsZoneIndex = {
   openAI: 7
   keyVault: 8
   machinelearning: 9
-  // The indexes for 'storageFile' and 'containerRegistry' have been removed as they were unused
 }
 
 // ===================================================
@@ -639,7 +631,6 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
     highAvailability: enableRedundancy ? 'ZoneRedundant' : 'Disabled'
     highAvailabilityZone: enableRedundancy ? 2 : -1
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    //delegatedSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetPrivateEndpointsResourceId : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -708,7 +699,7 @@ module pgSqlDelayScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
     tags: tags
     kind: 'AzurePowerShell'
     enableTelemetry: enableTelemetry
-    scriptContent: enablePrivateNetworking ? 'start-sleep -Seconds 120' : 'start-sleep -Seconds 300'
+    scriptContent: 'start-sleep -Seconds 300'
     azPowerShellVersion: '11.0'
     timeout: 'PT15M'
     cleanupPreference: 'Always'
@@ -1015,7 +1006,6 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
                 {
                   name: 'search-dns-zone-group-blob'
                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.searchService]!.outputs.resourceId
-                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
                 }
               ]
             }
@@ -1089,7 +1079,6 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }
-  // scope: resourceGroup()
 }
 
 var postgresDBFqdn = '${postgresResourceName}.postgres.database.azure.com'
@@ -1562,7 +1551,6 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
                 {
                   name: 'storage-dns-zone-group-blob'
                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
-                  // privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob].outputs.resourceId.value
                 }
               ]
             }
@@ -1600,6 +1588,59 @@ module storage './modules/storage/storage-account/storage-account.bicep' = {
   }
 }
 
+module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.3' = {
+  name: take('avm.res.event-grid.system-topic.${eventGridSystemTopicName}', 64)
+  params: {
+    name: eventGridSystemTopicName
+    source: storage.outputs.resourceId
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    location: location
+    tags: allTags
+    diagnosticSettings: enableMonitoring
+      ? [
+          {
+            name: 'diagnosticSettings'
+            workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      : []
+    eventSubscriptions: [
+      {
+        name: eventGridSystemTopicName
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueName: queueName
+            resourceId: storage.outputs.resourceId
+          }
+        }
+        eventDeliverySchema: 'EventGridSchema'
+        filter: {
+          includedEventTypes: [
+            'Microsoft.Storage.BlobCreated'
+            'Microsoft.Storage.BlobDeleted'
+          ]
+          enableAdvancedFilteringOnArrays: true
+          subjectBeginsWith: '/blobServices/default/containers/${blobContainerName}/blobs/'
+        }
+        retryPolicy: {
+          maxDeliveryAttempts: 30
+          eventTimeToLiveInMinutes: 1440
+        }
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+      }
+    ]
+    // Use only user-assigned identity
+    managedIdentities: { systemAssigned: false, userAssignedResourceIds: [managedIdentityModule.outputs.resourceId] }
+    enableTelemetry: enableTelemetry
+  }
+}
+
 var systemAssignedRoleAssignments = union(
   databaseType == 'CosmosDB'
     ? [
@@ -1629,7 +1670,7 @@ var systemAssignedRoleAssignments = union(
   [
     {
       principalId: formrecognizer.outputs.systemAssignedMIPrincipalId
-      resourceId: formrecognizer.outputs.resourceId
+      resourceId: storage.outputs.resourceId
       roleName: 'Storage Blob Data Contributor'
       roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
       principalType: 'ServicePrincipal'
