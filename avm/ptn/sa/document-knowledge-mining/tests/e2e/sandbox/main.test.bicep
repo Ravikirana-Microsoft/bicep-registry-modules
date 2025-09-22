@@ -1,5 +1,5 @@
-metadata name = 'Document Knowledge Mining Solution - Defaults Test'
-metadata description = 'This test deploys the Document Knowledge Mining Solution with sandbox parameters to validate basic functionality.'
+metadata name = 'Sandbox configuration with default parameter values'
+metadata description = 'This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.'
 
 targetScope = 'subscription'
 
@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
       location: enforcedLocation
       aiDeploymentsLocation: enforcedLocation
       enablePrivateNetworking: false
-      enableMonitoring: true
+      enableMonitoring: false
       enableRedundancy: false
       enableScalability: false
       enableTelemetry: true
