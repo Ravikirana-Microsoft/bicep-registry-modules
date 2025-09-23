@@ -1,4 +1,4 @@
-git pushname: "avm.ptn.sa.chat-with-your-data"
+name: "avm.ptn.sa.chat-with-your-data"
 
 on:
   workflow_dispatch:
