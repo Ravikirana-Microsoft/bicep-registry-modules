@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [
         enablePrivateNetworking: true
         enableMonitoring: true
         enablePurgeProtection: true
-        enableRedundancy: true
+        enableRedundancy: false
         enableScalability: true
         enableTelemetry: true
         vmAdminUsername: 'adminuser'

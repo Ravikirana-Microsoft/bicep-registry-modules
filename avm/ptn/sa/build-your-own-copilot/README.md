@@ -143,7 +143,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     enableMonitoring: true
     enablePrivateNetworking: true
     enablePurgeProtection: true
-    enableRedundancy: true
+    enableRedundancy: false
     enableScalability: true
     // Non-required parameters
     enableTelemetry: true
@@ -179,7 +179,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
       "value": true
     },
     "enableRedundancy": {
-      "value": true
+      "value": false
     },
     "enableScalability": {
       "value": true
@@ -213,7 +213,7 @@ param azureAiServiceLocation = '<azureAiServiceLocation>'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enablePurgeProtection = true
-param enableRedundancy = true
+param enableRedundancy = false
 param enableScalability = true
 // Non-required parameters
 param enableTelemetry = true
