@@ -148,7 +148,7 @@ param azureOpenAIModelName string = 'gpt-4.1'
 param azureOpenAIModelVersion string = '2025-04-14'
 
 @description('Optional. Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.')
-param azureOpenAIModelCapacity int = 30
+param azureOpenAIModelCapacity int = 150
 
 @description('Optional. Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.')
 param useAdvancedImageProcessing bool = false
@@ -214,7 +214,7 @@ param azureOpenAIEmbeddingModelName string = 'text-embedding-ada-002'
 param azureOpenAIEmbeddingModelVersion string = '2'
 
 @description('Optional. Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota .')
-param azureOpenAIEmbeddingModelCapacity int = 30
+param azureOpenAIEmbeddingModelCapacity int = 100
 
 @description('Optional. Name of Computer Vision Resource (if useAdvancedImageProcessing=true).')
 var computerVisionName string = 'cv-${solutionSuffix}'
@@ -347,13 +347,13 @@ param virtualMachineAdminPassword string = ''
 param enableTelemetry bool = true
 
 @description('Optional. Image version tag to use.')
-param appversion string = '2025-09-23_3542'
+param appversion string = 'latest_waf_2025-09-24_3564'
 
 var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'doc-processing'
-var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/dev/'
+var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/main/'
 var registryName = 'cwydcontainerreg'
 
 var openAIFunctionsSystemPrompt = '''You help employees to navigate only private information sources.
@@ -462,7 +462,7 @@ module network 'modules/network.bicep' = if (enablePrivateNetworking) {
     vmAdminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
     vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
     location: location
-    tags: allTags
+    tags: tags
     enableTelemetry: enableTelemetry
   }
 }
@@ -518,7 +518,7 @@ module avmPrivateDnsZones './modules/private-dns-zone/private-dns-zone.bicep' = 
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
       name: zone
-      tags: allTags
+      tags: tags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
@@ -836,7 +836,7 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: azureOpenAIResourceName
     location: location
-    tags: allTags
+    tags: tags
     kind: 'OpenAI'
     sku: azureOpenAISkuName
     deployments: openAiDeployments
@@ -894,7 +894,7 @@ module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvance
     name: computerVisionName
     kind: 'ComputerVision'
     location: computerVisionLocation != '' ? computerVisionLocation : 'eastus' // Default to eastus if no location provided
-    tags: allTags
+    tags: tags
     sku: computerVisionSkuName
 
     enablePrivateNetworking: enablePrivateNetworking
@@ -980,7 +980,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
     // Required parameters
     name: azureAISearchName
     location: location
-    tags: allTags
+    tags: tags
     enableTelemetry: enableTelemetry
     sku: azureSearchSku
     authOptions: {
@@ -1073,7 +1073,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
   scope: resourceGroup()
   params: {
     name: webServerFarmResourceName
-    tags: allTags
+    tags: tags
     enableTelemetry: enableTelemetry
     location: location
     reserved: true
@@ -1202,7 +1202,6 @@ module adminweb 'modules/app/adminweb.bicep' = {
     name: hostingModel == 'container' ? '${adminWebsiteName}-docker' : adminWebsiteName
     location: location
     tags: union(tags, { 'azd-service-name': hostingModel == 'container' ? 'adminweb-docker' : 'adminweb' })
-    allTags: allTags
     kind: hostingModel == 'container' ? 'app,linux,container' : 'app,linux'
     serverFarmResourceId: webServerFarm.outputs.resourceId
     // runtime settings apply only for code-hosted apps
@@ -1403,7 +1402,7 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: formRecognizerName
     location: location
-    tags: allTags
+    tags: tags
     kind: 'FormRecognizer'
 
     enablePrivateNetworking: enablePrivateNetworking
@@ -1455,7 +1454,7 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
   params: {
     name: contentSafetyName
     location: location
-    tags: allTags
+    tags: tags
     kind: 'ContentSafety'
 
     enablePrivateNetworking: enablePrivateNetworking
@@ -1606,7 +1605,7 @@ module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.3'
     source: storage.outputs.resourceId
     topicType: 'Microsoft.Storage.StorageAccounts'
     location: location
-    tags: allTags
+    tags: tags
     diagnosticSettings: enableMonitoring
       ? [
           {

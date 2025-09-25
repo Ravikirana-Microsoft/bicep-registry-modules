@@ -1,5 +1,5 @@
-metadata name = 'Sandbox With Azure Database for PostgreSQL flexible servers'
-metadata description = 'This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.'
+metadata name = 'Sandbox With Azure Cosmos DB'
+metadata description = 'This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.'
 
 targetScope = 'subscription'
 
@@ -29,9 +29,6 @@ var enforcedLocation = 'australiaeast'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
-  tags: {
-    SecurityControl: 'Ignore'
-  }
 }
 
 // ============== //
@@ -46,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
+      databaseType: 'CosmosDB'
     }
   }
 ]
