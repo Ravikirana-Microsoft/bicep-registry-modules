@@ -12,9 +12,9 @@ param solutionName string = 'kmgs'
 @description('Optional. Azure location for the solution. If not provided, it defaults to the resource group location.')
 param location string = resourceGroup().location
 
-@maxLength(5)
+@maxLength(6)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
-param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
+param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 6)
 
 var solutionSuffix = toLower(trim(replace(
   replace(
@@ -79,17 +79,20 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
-param enablePrivateNetworking bool
+@description('Optional. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
+param enablePrivateNetworking bool = false
 
-@description('Required. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
-param enableMonitoring bool
+@description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
+param enableMonitoring bool = false
 
-@description('Required. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableRedundancy bool
+@description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+param enableRedundancy bool = false
 
-@description('Required. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableScalability bool
+@description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+param enableScalability bool = false
+
+@description('Optional. Enable purge protection. Defaults to false.')
+param enablePurgeProtection bool = false
 
 @metadata({
   azd: {
@@ -116,6 +119,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
       ...resourceGroup().tags
       ...tags
       TemplateName: 'DKM'
+      Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
       DeploymentName: deployment().name
     }
@@ -429,7 +433,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
 // using AVM Virtual Machine module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -579,6 +583,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
     enableTelemetry: enableTelemetry
+    enablePurgeProtection: enablePurgeProtection
     tags: tags
     disableLocalAuth: false
     replicaLocations: [
@@ -706,6 +711,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
     enableTelemetry: enableTelemetry
+    enablePurgeProtection: enablePurgeProtection
     tags: tags
     disableLocalAuth: true
     replicaLocations: [
