@@ -109,7 +109,7 @@ param createdBy string = contains(deployer(), 'userPrincipalName')
   : deployer().objectId
 
 // ========== Resource Group Tag ========== //
-resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
+resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
     tags: {
@@ -240,7 +240,7 @@ var dnsZoneIndex = {
   containerRegistry: 8
 }
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'dns-zone-${i}'
     params: {
@@ -333,7 +333,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
 }
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -356,14 +356,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (enablePr
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
-      zones: []
     }
   }
 }
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -372,7 +371,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (enable
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: tags
-    zone: 0
+    availabilityZone: 1
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -383,9 +383,13 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (enable
     osDisk: {
       name: 'osdisk-${jumpboxVmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        storageAccountType: 'Premium_LRS'
       }
     }
+    // Patch management configuration - required for maintenance configuration compatibility
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     nicConfigurations: [
       {
@@ -420,10 +424,51 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (enable
   }
 }
 
+// Create Maintenance Configuration for VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+// using AVM Virtual Machine module
+// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${jumpboxVmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
+
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -454,7 +499,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.cosmos-${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -462,7 +507,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     mongodbDatabases: [
       {
         name: 'default'
-        tag: 'default database'
       }
     ]
     tags: tags
@@ -502,7 +546,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     capabilitiesToAdd: [
       'EnableMongo'
     ]
-    automaticFailover: enableRedundancy ? true : false
     failoverLocations: enableRedundancy
       ? [
           {
@@ -528,7 +571,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
 
 // ========== App Configuration store ========== //
 var appConfigName = 'appcs-${solutionSuffix}'
-module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = {
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = {
   name: take('avm.res.app-configuration.configuration-store.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -655,7 +698,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
   }
 }
 
-module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
+module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
   name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -698,7 +741,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -933,7 +976,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.1' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.0' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
@@ -1067,7 +1110,7 @@ resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClus
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
