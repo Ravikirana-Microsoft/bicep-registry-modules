@@ -12,9 +12,9 @@ param solutionName string = 'kmgs'
 @description('Optional. Azure location for the solution. If not provided, it defaults to the resource group location.')
 param location string = resourceGroup().location
 
-@maxLength(6)
+@maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
-param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 6)
+param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
 
 var solutionSuffix = toLower(trim(replace(
   replace(

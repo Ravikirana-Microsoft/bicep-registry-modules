@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "16936909666112056898"
+      "templateHash": "7706081050756342632"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments."
@@ -30,8 +30,8 @@
     },
     "solutionUniqueToken": {
       "type": "string",
-      "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 6)]",
-      "maxLength": 6,
+      "defaultValue": "[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 5)]",
+      "maxLength": 5,
       "metadata": {
         "description": "Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name."
       }

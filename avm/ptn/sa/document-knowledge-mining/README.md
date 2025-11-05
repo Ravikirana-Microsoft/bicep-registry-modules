@@ -521,7 +521,7 @@ A unique token for the solution. This is used to ensure resource names are uniqu
 
 - Required: No
 - Type: string
-- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 6)]`
+- Default: `[substring(uniqueString(subscription().id, resourceGroup().name, parameters('solutionName')), 0, 5)]`
 
 ### Parameter: `tags`
 
