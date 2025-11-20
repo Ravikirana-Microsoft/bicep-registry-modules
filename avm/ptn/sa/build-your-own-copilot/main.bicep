@@ -1013,6 +1013,20 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
   }
 }
 
+// ========== AI Agent Endpoint Secret (Native Azure Resource) ========== //
+// Using native Azure resource to avoid AVM module parameter validation issues with conditional outputs
+resource keyVaultReference 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
+  name: keyVaultName
+}
+
+resource aiAgentEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+  parent: keyVaultReference
+  name: 'AZURE-AI-AGENT-ENDPOINT'
+  properties: {
+    value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
+  }
+}
+
 // ========== Maintenance Configuration Mapping ========== //
 // Map Azure regions to their corresponding SQL Database maintenance configuration names
 var sqlMaintenanceConfigMapping = {
