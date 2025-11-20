@@ -1007,10 +1007,6 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
         name: 'ADLS-ACCOUNT-CONTAINER'
         value: 'data'
       }
-      {
-        name: 'AZURE-AI-AGENT-ENDPOINT'
-        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
-      }
       // WAF aligned configuration - Removed ADLS-ACCOUNT-KEY since allowSharedKeyAccess is disabled
       // The application will use managed identity for storage authentication instead
     ]
