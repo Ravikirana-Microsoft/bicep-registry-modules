@@ -668,10 +668,6 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         name: 'AZURE-SEARCH-ENDPOINT'
         value: 'https://${aiSearchName}.search.windows.net'
       }
-      {
-        name: 'AZURE-AI-AGENT-ENDPOINT'
-        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
-      }
     ]
     enableTelemetry: enableTelemetry
   }
@@ -1010,6 +1006,10 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
       {
         name: 'ADLS-ACCOUNT-CONTAINER'
         value: 'data'
+      }
+      {
+        name: 'AZURE-AI-AGENT-ENDPOINT'
+        value: aiFoundryAiServices.outputs.aiProjectInfo.apiEndpoint
       }
       // WAF aligned configuration - Removed ADLS-ACCOUNT-KEY since allowSharedKeyAccess is disabled
       // The application will use managed identity for storage authentication instead
