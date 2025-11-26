@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 20)
+      solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
       azureAiServiceLocation: enforcedLocation
       enablePrivateNetworking: false
       enableMonitoring: false
