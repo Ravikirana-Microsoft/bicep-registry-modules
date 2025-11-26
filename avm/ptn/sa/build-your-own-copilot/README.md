@@ -155,6 +155,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
+    solutionName: '<solutionName>'
   }
 }
 ```
@@ -193,6 +194,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     },
     "enableTelemetry": {
       "value": true
+    },
+    "solutionName": {
+      "value": "<solutionName>"
     }
   }
 }
@@ -217,6 +221,7 @@ param enablePurgeProtection = false
 param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
+param solutionName = '<solutionName>'
 ```
 
 </details>
@@ -244,6 +249,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -285,6 +291,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "enableTelemetry": {
       "value": true
     },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -314,6 +323,7 @@ param enablePurgeProtection = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
