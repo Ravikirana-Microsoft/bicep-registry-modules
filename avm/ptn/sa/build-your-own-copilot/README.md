@@ -243,6 +243,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    cosmosLocation: '<cosmosLocation>'
     enableMonitoring: true
     enablePrivateNetworking: true
     enablePurgeProtection: true
@@ -273,6 +274,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "cosmosLocation": {
+      "value": "<cosmosLocation>"
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -317,6 +321,7 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param cosmosLocation = '<cosmosLocation>'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enablePurgeProtection = true

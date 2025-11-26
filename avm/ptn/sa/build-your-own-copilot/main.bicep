@@ -241,7 +241,7 @@ var allTags = union(
 )
 
 // Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
+var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[cosmosLocation]
 
 @description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
@@ -881,7 +881,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
           {
             failoverPriority: 0
             isZoneRedundant: true
-            locationName: solutionLocation
+            locationName: cosmosLocation
           }
           {
             failoverPriority: 1
