@@ -1164,6 +1164,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.0' = {
       : []
     tags: allTags
   }
+  dependsOn: [avmPrivateDnsZones]
 }
 
 // ========== Frontend server farm ========== //
