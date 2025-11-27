@@ -280,12 +280,12 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
     dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
-    replication: enableRedundancy
-      ? {
-          enabled: true
-          location: replicaLocation
-        }
-      : null
+    replication: null //enableRedundancy
+    //   ? {
+    //       enabled: true
+    //       location: replicaLocation
+    //     }
+    //   : null
     // WAF aligned configuration for Private Networking
     publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
