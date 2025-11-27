@@ -531,32 +531,32 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 // ========== Private DNS Zones ========== //
 var privateDnsZones = [
-  'privatelink.cognitiveservices.azure.com'
-  'privatelink.openai.azure.com'
-  'privatelink.services.ai.azure.com'
-  'privatelink.azurewebsites.net'
+  'privatelink.documents.azure.com'
+  'privatelink.search.windows.net'
+  'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.queue.${environment().suffixes.storage}'
   'privatelink.file.${environment().suffixes.storage}'
-  'privatelink.documents.azure.com'
+  'privatelink.cognitiveservices.azure.com'
+  'privatelink.openai.azure.com'
+  'privatelink.services.ai.azure.com'
   'privatelink.vaultcore.azure.net'
-  'privatelink${environment().suffixes.sqlServerHostname}'
-  'privatelink.search.windows.net'
+  'privatelink.azurewebsites.net'
 ]
 
 // DNS Zone Index Constants
 var dnsZoneIndex = {
-  cognitiveServices: 0
-  openAI: 1
-  aiServices: 2
-  appService: 3
-  storageBlob: 4
-  storageQueue: 5
-  storageFile: 6
-  cosmosDB: 7
-  keyVault: 8
-  sqlServer: 9
-  searchService: 10
+  cosmosDB: 0
+  searchService: 1
+  sqlServer: 2
+  storageBlob: 3
+  storageQueue: 4
+  storageFile: 5
+  cognitiveServices: 6
+  openAI: 7
+  aiServices: 8
+  keyVault: 9
+  appService: 10
 }
 
 // List of DNS zone indices that correspond to AI-related services.

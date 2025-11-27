@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2437733102280774875"
+      "templateHash": "14441323784952530427"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -304,30 +304,30 @@
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
     "jumpboxVmName": "[take(format('vm-jumpbox-{0}', variables('solutionSuffix')), 15)]",
     "privateDnsZones": [
-      "privatelink.cognitiveservices.azure.com",
-      "privatelink.openai.azure.com",
-      "privatelink.services.ai.azure.com",
-      "privatelink.azurewebsites.net",
+      "privatelink.documents.azure.com",
+      "privatelink.search.windows.net",
+      "[format('privatelink{0}', environment().suffixes.sqlServerHostname)]",
       "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
       "[format('privatelink.queue.{0}', environment().suffixes.storage)]",
       "[format('privatelink.file.{0}', environment().suffixes.storage)]",
-      "privatelink.documents.azure.com",
+      "privatelink.cognitiveservices.azure.com",
+      "privatelink.openai.azure.com",
+      "privatelink.services.ai.azure.com",
       "privatelink.vaultcore.azure.net",
-      "[format('privatelink{0}', environment().suffixes.sqlServerHostname)]",
-      "privatelink.search.windows.net"
+      "privatelink.azurewebsites.net"
     ],
     "dnsZoneIndex": {
-      "cognitiveServices": 0,
-      "openAI": 1,
-      "aiServices": 2,
-      "appService": 3,
-      "storageBlob": 4,
-      "storageQueue": 5,
-      "storageFile": 6,
-      "cosmosDB": 7,
-      "keyVault": 8,
-      "sqlServer": 9,
-      "searchService": 10
+      "cosmosDB": 0,
+      "searchService": 1,
+      "sqlServer": 2,
+      "storageBlob": 3,
+      "storageQueue": 4,
+      "storageFile": 5,
+      "cognitiveServices": 6,
+      "openAI": 7,
+      "aiServices": 8,
+      "keyVault": 9,
+      "appService": 10
     },
     "aiRelatedDnsZoneIndices": [
       "[variables('dnsZoneIndex').cognitiveServices]",
