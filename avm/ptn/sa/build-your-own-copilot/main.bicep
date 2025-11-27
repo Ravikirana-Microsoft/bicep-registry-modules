@@ -267,7 +267,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -817,7 +817,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = {
 var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'db_conversation_history'
 var collectionName = 'conversations'
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -838,7 +838,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
         ]
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         // Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
         roleName: 'Cosmos DB SQL Data Contributor'
@@ -897,13 +897,12 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.17.0' = {
           }
         ]
   }
-  dependsOn: [keyvault, avmStorageAccount]
 }
 
 // ========== AVM WAF ========== //
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -986,14 +985,13 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.27.1' = {
       ]
     }
   }
-  dependsOn: [keyvault]
 }
 
 // working version of saving storage account secrets in key vault using AVM module
 module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: take('saveStorageAccountSecretsInKeyVault.${keyVaultName}', 64)
   params: {
-    name: keyVaultName
+    name: keyvault.outputs.name
     enablePurgeProtection: enablePurgeProtection
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
@@ -1005,7 +1003,7 @@ module saveStorageAccountSecretsInKeyVault 'br/public:avm/res/key-vault/vault:0.
     secrets: [
       {
         name: 'ADLS-ACCOUNT-NAME'
-        value: storageAccountName
+        value: avmStorageAccount.outputs.name
       }
       {
         name: 'ADLS-ACCOUNT-CONTAINER'
@@ -1066,7 +1064,7 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.20.3' = {
+module sqlDBModule 'br/public:avm/res/sql/server:0.21.0' = {
   name: take('avm.res.sql.server.${sqlDbName}', 64)
   params: {
     // Required parameters
