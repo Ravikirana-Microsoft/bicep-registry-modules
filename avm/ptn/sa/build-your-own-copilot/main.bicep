@@ -1064,7 +1064,7 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.21.0' = {
+module sqlDBModule 'br/public:avm/res/sql/server:0.20.2' = {
   name: take('avm.res.sql.server.${sqlDbName}', 64)
   params: {
     // Required parameters
