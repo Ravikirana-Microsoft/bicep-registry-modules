@@ -28,7 +28,7 @@ param virtualMachineAdminPassword string = newGuid()
 var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'uksouth'
+var enforcedSecondLocation = 'australiaeast'
 
 // General resources
 // =================
