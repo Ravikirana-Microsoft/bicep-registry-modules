@@ -35,31 +35,69 @@ var enforcedSecondLocation = 'southeastasia'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+  tags: {
+    SecurityControl: 'Ignore'
+  }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-      scope: resourceGroup
-      name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-      params: {
-        solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
-        azureAiServiceLocation: enforcedLocation
-        cosmosLocation: enforcedSecondLocation
-        enablePrivateNetworking: true
-        enableMonitoring: true
-        enablePurgeProtection: true
-        enableRedundancy: true
-        enableScalability: true
-        enableTelemetry: true
-        vmAdminUsername: 'adminuser'
-        vmAdminPassword: virtualMachineAdminPassword
-        gptModelCapacity: 10
-        embeddingDeploymentCapacity: 10
-      }
-    }
-]
+// Initial deployment
+module testDeploymentInit '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-init'
+  params: {
+    solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
+    azureAiServiceLocation: enforcedLocation
+    cosmosLocation: enforcedSecondLocation
+    enablePrivateNetworking: true
+    enableMonitoring: true
+    enablePurgeProtection: true
+    enableRedundancy: true
+    enableScalability: true
+    enableTelemetry: true
+    vmAdminUsername: 'adminuser'
+    vmAdminPassword: virtualMachineAdminPassword
+    gptModelCapacity: 10
+    embeddingDeploymentCapacity: 10
+  }
+}
+
+// Sleep for 5 minutes between init and idem deployments
+module sleepDeployment './sleep.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-sleep-${serviceShort}'
+  params: {
+    location: enforcedLocation
+    scriptName: '${uniqueString(deployment().name, enforcedLocation)}-sleep-${serviceShort}'
+  }
+  dependsOn: [
+    testDeploymentInit
+  ]
+}
+
+// Idempotency deployment
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-idem'
+  params: {
+    solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
+    azureAiServiceLocation: enforcedLocation
+    cosmosLocation: enforcedSecondLocation
+    enablePrivateNetworking: true
+    enableMonitoring: true
+    enablePurgeProtection: true
+    enableRedundancy: true
+    enableScalability: true
+    enableTelemetry: true
+    vmAdminUsername: 'adminuser'
+    vmAdminPassword: virtualMachineAdminPassword
+    gptModelCapacity: 10
+    embeddingDeploymentCapacity: 10
+  }
+  dependsOn: [
+    sleepDeployment
+  ]
+}
