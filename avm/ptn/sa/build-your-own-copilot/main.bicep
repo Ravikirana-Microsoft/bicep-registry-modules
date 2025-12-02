@@ -559,13 +559,6 @@ var dnsZoneIndex = {
   appService: 10
 }
 
-// List of DNS zone indices that correspond to AI-related services.
-var aiRelatedDnsZoneIndices = [
-  dnsZoneIndex.cognitiveServices
-  dnsZoneIndex.openAI
-  dnsZoneIndex.aiServices
-]
-
 // ===================================================
 // DEPLOY PRIVATE DNS ZONES
 // - Deploys all zones if no existing Foundry project is used
@@ -1064,108 +1057,108 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
-module sqlDBModule 'br/public:avm/res/sql/server:0.20.2' = {
-  name: take('avm.res.sql.server.${sqlDbName}', 64)
-  params: {
-    // Required parameters
-    name: 'sql-${solutionSuffix}'
-    // Non-required parameters
-    enableTelemetry: enableTelemetry
-    administrators: {
-      azureADOnlyAuthentication: true
-      login: userAssignedIdentity.outputs.name
-      principalType: 'Application'
-      sid: userAssignedIdentity.outputs.principalId
-      tenantId: subscription().tenantId
-    }
-    connectionPolicy: 'Redirect'
-    databases: [
-      {
-        // WAF aligned configuration - always configure maintenance window when available
-        maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
-        zoneRedundant: enableRedundancy
-        // When enableRedundancy is true (zoneRedundant=true), set availabilityZone to -1
-        // to let Azure automatically manage zone placement across multiple zones.
-        // When enableRedundancy is false, also use -1 (no specific zone assignment).
-        availabilityZone: -1
-        collation: 'SQL_Latin1_General_CP1_CI_AS'
-        diagnosticSettings: enableMonitoring
-          ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
-          : null
-        licenseType: 'LicenseIncluded'
-        maxSizeBytes: 34359738368
-        name: 'sqldb-${solutionSuffix}'
-        minCapacity: '1'
-        sku: {
-          name: 'GP_S_Gen5'
-          tier: 'GeneralPurpose'
-          family: 'Gen5'
-          capacity: 2
-        }
-      }
-    ]
-    location: solutionLocation
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        userAssignedIdentity.outputs.resourceId
-      ]
-    }
-    primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
-    // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
-    securityAlertPolicies: [
-      {
-        name: 'Default'
-        state: 'Enabled'
-        emailAccountAdmins: false
-      }
-    ]
-    // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
-    vulnerabilityAssessmentsObj: {
-      name: 'default'
-      storageAccountResourceId: avmStorageAccount.outputs.resourceId
-      storageContainerName: 'sqlvascans'
-      storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
-      recurringScansIsEnabled: true
-      recurringScansEmailSubscriptionAdmins: false
-      recurringScansEmails: []
-      useStorageAccountAccessKey: false
-      createStorageRoleAssignment: true
-    }
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
-                }
-              ]
-            }
-            service: 'sqlServer'
-            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-            tags: allTags
-          }
-        ]
-      : []
-    firewallRules: (!enablePrivateNetworking)
-      ? [
-          {
-            endIpAddress: '255.255.255.255'
-            name: 'AllowSpecificRange'
-            startIpAddress: '0.0.0.0'
-          }
-          {
-            endIpAddress: '0.0.0.0'
-            name: 'AllowAllWindowsAzureIps'
-            startIpAddress: '0.0.0.0'
-          }
-        ]
-      : []
-    tags: allTags
-  }
-  dependsOn: [avmPrivateDnsZones]
-}
+// module sqlDBModule 'br/public:avm/res/sql/server:0.20.2' = {
+//   name: take('avm.res.sql.server.${sqlDbName}', 64)
+//   params: {
+//     // Required parameters
+//     name: 'sql-${solutionSuffix}'
+//     // Non-required parameters
+//     enableTelemetry: enableTelemetry
+//     administrators: {
+//       azureADOnlyAuthentication: true
+//       login: userAssignedIdentity.outputs.name
+//       principalType: 'Application'
+//       sid: userAssignedIdentity.outputs.principalId
+//       tenantId: subscription().tenantId
+//     }
+//     connectionPolicy: 'Redirect'
+//     databases: [
+//       {
+//         // WAF aligned configuration - always configure maintenance window when available
+//         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
+//         zoneRedundant: enableRedundancy
+//         // When enableRedundancy is true (zoneRedundant=true), set availabilityZone to -1
+//         // to let Azure automatically manage zone placement across multiple zones.
+//         // When enableRedundancy is false, also use -1 (no specific zone assignment).
+//         availabilityZone: -1
+//         collation: 'SQL_Latin1_General_CP1_CI_AS'
+//         diagnosticSettings: enableMonitoring
+//           ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
+//           : null
+//         licenseType: 'LicenseIncluded'
+//         maxSizeBytes: 34359738368
+//         name: 'sqldb-${solutionSuffix}'
+//         minCapacity: '1'
+//         sku: {
+//           name: 'GP_S_Gen5'
+//           tier: 'GeneralPurpose'
+//           family: 'Gen5'
+//           capacity: 2
+//         }
+//       }
+//     ]
+//     location: solutionLocation
+//     managedIdentities: {
+//       systemAssigned: true
+//       userAssignedResourceIds: [
+//         userAssignedIdentity.outputs.resourceId
+//       ]
+//     }
+//     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+//     // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
+//     securityAlertPolicies: [
+//       {
+//         name: 'Default'
+//         state: 'Enabled'
+//         emailAccountAdmins: false
+//       }
+//     ]
+//     // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
+//     vulnerabilityAssessmentsObj: {
+//       name: 'default'
+//       storageAccountResourceId: avmStorageAccount.outputs.resourceId
+//       storageContainerName: 'sqlvascans'
+//       storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
+//       recurringScansIsEnabled: true
+//       recurringScansEmailSubscriptionAdmins: false
+//       recurringScansEmails: []
+//       useStorageAccountAccessKey: false
+//       createStorageRoleAssignment: true
+//     }
+//     privateEndpoints: enablePrivateNetworking
+//       ? [
+//           {
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
+//                 }
+//               ]
+//             }
+//             service: 'sqlServer'
+//             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+//             tags: allTags
+//           }
+//         ]
+//       : []
+//     firewallRules: (!enablePrivateNetworking)
+//       ? [
+//           {
+//             endIpAddress: '255.255.255.255'
+//             name: 'AllowSpecificRange'
+//             startIpAddress: '0.0.0.0'
+//           }
+//           {
+//             endIpAddress: '0.0.0.0'
+//             name: 'AllowAllWindowsAzureIps'
+//             startIpAddress: '0.0.0.0'
+//           }
+//         ]
+//       : []
+//     tags: allTags
+//   }
+//   dependsOn: [avmPrivateDnsZones]
+// }
 
 // ========== Frontend server farm ========== //
 // WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
@@ -1433,11 +1426,11 @@ output resourceGroupName string = resourceGroup().name
 @description('The resource ID of the AI Foundry service.')
 output aiFoundryResourceId string = aiFoundryAiServices.outputs.resourceId
 
-@description('The name of the SQL Database server.')
-output sqlDbServerName string = sqlDBModule.outputs.name
+// @description('The name of the SQL Database server.')
+// output sqlDbServerName string = sqlDBModule.outputs.name
 
-@description('The name of the SQL Database.')
-output sqlDbDatabase string = sqlDbName
+// @description('The name of the SQL Database.')
+// output sqlDbDatabase string = sqlDbName
 
 @description('The name of the managed identity for the web application.')
 output managedIdentityWebAppName string = userAssignedIdentity.outputs.name
