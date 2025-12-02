@@ -136,69 +136,98 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/build-your-own-copilot:<version>`.
 
-- [Sandbox](#example-1-sandbox)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
 - [Waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Sandbox_
+### Example 1: _Sandbox configuration with default parameter values_
+
+This instance deploys the Build Your Own Copilot Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-// targetScope = 'subscription'
+module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version>' = {
+  name: 'buildYourOwnCopilotDeployment'
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enablePurgeProtection: false
+    enableRedundancy: false
+    enableScalability: false
+    enableTelemetry: true
+    solutionName: '<solutionName>'
+  }
+}
+```
 
-// metadata name = 'Sandbox configuration with default parameter values'
-// metadata description = 'This instance deploys the Build Your Own Copilot Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
+</details>
+<p>
 
-// // ========== //
-// // Parameters //
-// // ========== //
+<details>
 
-// @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// param serviceShort string = 'byoc-min'
+<summary>via JSON parameters file</summary>
 
-// @description('Optional. The name of the resource group to deploy for testing purposes.')
-// @maxLength(90)
-// param resourceGroupName string = 'dep-${namePrefix}-sa.ca-${serviceShort}-rg'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enablePurgeProtection": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    }
+  }
+}
+```
 
-// @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-// param namePrefix string = '#_namePrefix_#'
+</details>
+<p>
 
-// // ============ //
-// // Dependencies //
-// // ============ //
-// #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-// var enforcedLocation = 'australiaeast'
+<details>
 
-// // General resources
-// // =================
-// resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-//   name: resourceGroupName
-//   location: enforcedLocation
-// }
+<summary>via Bicep parameters file</summary>
 
-// // ============== //
-// // Test Execution //
-// // ============== //
+```bicep-params
+using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
-//       azureAiServiceLocation: enforcedLocation
-//       enablePrivateNetworking: false
-//       enableMonitoring: false
-//       enablePurgeProtection: false
-//       enableRedundancy: false
-//       enableScalability: false
-//       enableTelemetry: true
-//     }
-//   }
-// ]
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enablePurgeProtection = false
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = true
+param solutionName = '<solutionName>'
 ```
 
 </details>
