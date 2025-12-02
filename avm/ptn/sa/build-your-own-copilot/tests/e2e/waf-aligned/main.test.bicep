@@ -28,7 +28,7 @@ param virtualMachineAdminPassword string = newGuid()
 var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'australiaeast'
+var enforcedSecondLocation = 'southeastasia'
 
 // General resources
 // =================
@@ -58,6 +58,8 @@ module testDeployment '../../../main.bicep' = [
         enableTelemetry: true
         vmAdminUsername: 'adminuser'
         vmAdminPassword: virtualMachineAdminPassword
+        gptModelCapacity: 10
+        embeddingDeploymentCapacity: 10
       }
     }
 ]

@@ -221,12 +221,14 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
     cosmosLocation: '<cosmosLocation>'
+    embeddingDeploymentCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
     enablePurgeProtection: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    gptModelCapacity: 10
     solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -254,6 +256,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     "cosmosLocation": {
       "value": "<cosmosLocation>"
     },
+    "embeddingDeploymentCapacity": {
+      "value": 10
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -271,6 +276,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     },
     "enableTelemetry": {
       "value": true
+    },
+    "gptModelCapacity": {
+      "value": 10
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -299,12 +307,14 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
 param cosmosLocation = '<cosmosLocation>'
+param embeddingDeploymentCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enablePurgeProtection = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param gptModelCapacity = 10
 param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
