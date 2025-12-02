@@ -75,8 +75,8 @@ This module deploys a comprehensive Build Your Own Copilot solution accelerator 
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
@@ -97,6 +97,20 @@ This module deploys a comprehensive Build Your Own Copilot solution accelerator 
 | `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
 | `Microsoft.SecurityInsights/onboardingStates` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates)</li></ul> |
+| `Microsoft.Sql/servers` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers)</li></ul> |
+| `Microsoft.Sql/servers/auditingSettings` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings)</li></ul> |
+| `Microsoft.Sql/servers/connectionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/elasticPools` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_elasticpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools)</li></ul> |
+| `Microsoft.Sql/servers/encryptionProtector` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_encryptionprotector.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector)</li></ul> |
+| `Microsoft.Sql/servers/failoverGroups` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_failovergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups)</li></ul> |
+| `Microsoft.Sql/servers/firewallRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/firewallRules)</li></ul> |
+| `Microsoft.Sql/servers/keys` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys)</li></ul> |
+| `Microsoft.Sql/servers/securityAlertPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/securityAlertPolicies)</li></ul> |
+| `Microsoft.Sql/servers/virtualNetworkRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules)</li></ul> |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/vulnerabilityAssessments)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
@@ -207,6 +221,7 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
     cosmosLocation: '<cosmosLocation>'
+    cosmosReplicaLocation: '<cosmosReplicaLocation>'
     embeddingDeploymentCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -241,6 +256,9 @@ module buildYourOwnCopilot 'br/public:avm/ptn/sa/build-your-own-copilot:<version
     // Non-required parameters
     "cosmosLocation": {
       "value": "<cosmosLocation>"
+    },
+    "cosmosReplicaLocation": {
+      "value": "<cosmosReplicaLocation>"
     },
     "embeddingDeploymentCapacity": {
       "value": 10
@@ -293,6 +311,7 @@ using 'br/public:avm/ptn/sa/build-your-own-copilot:<version>'
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
 param cosmosLocation = '<cosmosLocation>'
+param cosmosReplicaLocation = '<cosmosReplicaLocation>'
 param embeddingDeploymentCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
@@ -325,6 +344,7 @@ param vmAdminUsername = 'adminuser'
 | [`containerImageName`](#parameter-containerimagename) | string | The Container Image Name to deploy on the webapp. |
 | [`containerRegistryHostname`](#parameter-containerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`cosmosLocation`](#parameter-cosmoslocation) | string | CosmosDB Location. |
+| [`cosmosReplicaLocation`](#parameter-cosmosreplicalocation) | string | CosmosDB Location. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -400,6 +420,14 @@ CosmosDB Location.
 - Required: No
 - Type: string
 - Default: `'eastus2'`
+
+### Parameter: `cosmosReplicaLocation`
+
+CosmosDB Location.
+
+- Required: No
+- Type: string
+- Default: `'canadacentral'`
 
 ### Parameter: `createdBy`
 
@@ -650,7 +678,9 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `managedIdentityWebAppClientId` | string | The client ID of the managed identity for the web application. |
 | `managedIdentityWebAppName` | string | The name of the managed identity for the web application. |
 | `resourceGroupName` | string | The name of the Resource Group. |
+| `sqlDbDatabase` | string | The name of the SQL Database. |
 | `sqlDbServer` | string | The fully qualified domain name (FQDN) of the Azure SQL Server. |
+| `sqlDbServerName` | string | The name of the SQL Database server. |
 | `sqlDbUserMid` | string | The client ID of the managed identity for the web application. |
 | `storageAccountName` | string | The name of the deployed Storage Account. |
 | `storageContainerName` | string | The name of the Storage Container. |
@@ -678,6 +708,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.13.0` | Remote reference |
 | `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
+| `br/public:avm/res/sql/server:0.21.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.29.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.5.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

@@ -19,6 +19,9 @@ param solutionName string = 'clientadvisor'
 @description('Optional. CosmosDB Location.')
 param cosmosLocation string = 'eastus2'
 
+@description('Optional. CosmosDB Location.')
+param cosmosReplicaLocation string = 'canadacentral'
+
 @minLength(1)
 @description('Optional. GPT model deployment type.')
 @allowed([
@@ -219,29 +222,12 @@ var replicaLocation = replicaRegionPairs[resourceGroup().location]
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth' //'southeastasia'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-
 var allTags = union(
   {
     'azd-env-name': solutionName
   },
   tags
 )
-
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[cosmosLocation]
 
 @description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
@@ -390,6 +376,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
     enableTelemetry: enableTelemetry
   }
 }
+
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
 module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
@@ -879,7 +866,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosReplicaLocation
           }
         ]
       : [
@@ -1057,108 +1044,122 @@ resource maintenanceWindow 'Microsoft.Maintenance/publicMaintenanceConfiguration
 // ========== AVM WAF ========== //
 // ========== SQL module ========== //
 var sqlDbName = 'sqldb-${solutionSuffix}'
-// module sqlDBModule 'br/public:avm/res/sql/server:0.20.2' = {
-//   name: take('avm.res.sql.server.${sqlDbName}', 64)
-//   params: {
-//     // Required parameters
-//     name: 'sql-${solutionSuffix}'
-//     // Non-required parameters
-//     enableTelemetry: enableTelemetry
-//     administrators: {
-//       azureADOnlyAuthentication: true
-//       login: userAssignedIdentity.outputs.name
-//       principalType: 'Application'
-//       sid: userAssignedIdentity.outputs.principalId
-//       tenantId: subscription().tenantId
-//     }
-//     connectionPolicy: 'Redirect'
-//     databases: [
-//       {
-//         // WAF aligned configuration - always configure maintenance window when available
-//         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
-//         zoneRedundant: enableRedundancy
-//         // When enableRedundancy is true (zoneRedundant=true), set availabilityZone to -1
-//         // to let Azure automatically manage zone placement across multiple zones.
-//         // When enableRedundancy is false, also use -1 (no specific zone assignment).
-//         availabilityZone: -1
-//         collation: 'SQL_Latin1_General_CP1_CI_AS'
-//         diagnosticSettings: enableMonitoring
-//           ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
-//           : null
-//         licenseType: 'LicenseIncluded'
-//         maxSizeBytes: 34359738368
-//         name: 'sqldb-${solutionSuffix}'
-//         minCapacity: '1'
-//         sku: {
-//           name: 'GP_S_Gen5'
-//           tier: 'GeneralPurpose'
-//           family: 'Gen5'
-//           capacity: 2
-//         }
-//       }
-//     ]
-//     location: solutionLocation
-//     managedIdentities: {
-//       systemAssigned: true
-//       userAssignedResourceIds: [
-//         userAssignedIdentity.outputs.resourceId
-//       ]
-//     }
-//     primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
-//     // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
-//     securityAlertPolicies: [
-//       {
-//         name: 'Default'
-//         state: 'Enabled'
-//         emailAccountAdmins: false
-//       }
-//     ]
-//     // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
-//     vulnerabilityAssessmentsObj: {
-//       name: 'default'
-//       storageAccountResourceId: avmStorageAccount.outputs.resourceId
-//       storageContainerName: 'sqlvascans'
-//       storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
-//       recurringScansIsEnabled: true
-//       recurringScansEmailSubscriptionAdmins: false
-//       recurringScansEmails: []
-//       useStorageAccountAccessKey: false
-//       createStorageRoleAssignment: true
-//     }
-//     privateEndpoints: enablePrivateNetworking
-//       ? [
-//           {
-//             privateDnsZoneGroup: {
-//               privateDnsZoneGroupConfigs: [
-//                 {
-//                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
-//                 }
-//               ]
-//             }
-//             service: 'sqlServer'
-//             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-//             tags: allTags
-//           }
-//         ]
-//       : []
-//     firewallRules: (!enablePrivateNetworking)
-//       ? [
-//           {
-//             endIpAddress: '255.255.255.255'
-//             name: 'AllowSpecificRange'
-//             startIpAddress: '0.0.0.0'
-//           }
-//           {
-//             endIpAddress: '0.0.0.0'
-//             name: 'AllowAllWindowsAzureIps'
-//             startIpAddress: '0.0.0.0'
-//           }
-//         ]
-//       : []
-//     tags: allTags
-//   }
-//   dependsOn: [avmPrivateDnsZones]
-// }
+module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
+  name: take('avm.res.sql.server.${sqlDbName}', 64)
+  params: {
+    // Required parameters
+    name: 'sql-${solutionSuffix}'
+    // Non-required parameters
+    enableTelemetry: enableTelemetry
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: userAssignedIdentity.outputs.name
+      principalType: 'Application'
+      sid: userAssignedIdentity.outputs.principalId
+      tenantId: subscription().tenantId
+    }
+    connectionPolicy: 'Redirect'
+    databases: [
+      {
+        // WAF aligned configuration - always configure maintenance window when available
+        maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
+        zoneRedundant: enableRedundancy
+        // When enableRedundancy is true (zoneRedundant=true), set availabilityZone to -1
+        // to let Azure automatically manage zone placement across multiple zones.
+        // When enableRedundancy is false, also use -1 (no specific zone assignment).
+        availabilityZone: -1
+        collation: 'SQL_Latin1_General_CP1_CI_AS'
+        diagnosticSettings: enableMonitoring
+          ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
+          : null
+        licenseType: 'LicenseIncluded'
+        maxSizeBytes: 34359738368
+        name: 'sqldb-${solutionSuffix}'
+        minCapacity: '1'
+        sku: {
+          name: 'GP_S_Gen5'
+          tier: 'GeneralPurpose'
+          family: 'Gen5'
+          capacity: 2
+        }
+      }
+    ]
+    location: solutionLocation
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: userAssignedIdentity.outputs.resourceId
+    // WAF aligned configuration - Microsoft Defender for SQL (required for Vulnerability Assessment)
+    securityAlertPolicies: [
+      {
+        name: 'Default'
+        state: 'Enabled'
+        emailAccountAdmins: false
+      }
+    ]
+    // WAF aligned configuration - SQL Vulnerability Assessment for security monitoring
+    vulnerabilityAssessmentsObj: {
+      name: 'default'
+      storageAccountResourceId: avmStorageAccount.outputs.resourceId
+      storageContainerName: 'sqlvascans'
+      storageContainerPath: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/sqlvascans'
+      recurringScansIsEnabled: true
+      recurringScansEmailSubscriptionAdmins: false
+      recurringScansEmails: []
+      useStorageAccountAccessKey: false
+      createStorageRoleAssignment: true
+    }
+    privateEndpoints: []
+    firewallRules: (!enablePrivateNetworking)
+      ? [
+          {
+            endIpAddress: '255.255.255.255'
+            name: 'AllowSpecificRange'
+            startIpAddress: '0.0.0.0'
+          }
+          {
+            endIpAddress: '0.0.0.0'
+            name: 'AllowAllWindowsAzureIps'
+            startIpAddress: '0.0.0.0'
+          }
+        ]
+      : []
+    tags: allTags
+  }
+  dependsOn: [avmPrivateDnsZones]
+}
+
+module sqlDbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.network.private-endpoint.sql-${solutionSuffix}', 64)
+  params: {
+    name: 'pep-sql-${solutionSuffix}'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+    customNetworkInterfaceName: 'nic-sql-${solutionSuffix}'
+    privateLinkServiceConnections: [
+      {
+        name: 'pl-sqlserver-${solutionSuffix}'
+        properties: {
+          privateLinkServiceId: sqlDBModule.outputs.resourceId
+          groupIds: ['sqlServer']
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.sqlServer]!.outputs.resourceId
+        }
+      ]
+    }
+  }
+  dependsOn: [aiFoundryAiServices, searchService, cosmosDb, keyvault]
+}
 
 // ========== Frontend server farm ========== //
 // WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
@@ -1187,7 +1188,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
 // WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 // PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 
-//NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
+// NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
 var webSiteResourceName = 'app-${solutionSuffix}'
 module webSite 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${webSiteResourceName}', 64)
@@ -1426,11 +1427,11 @@ output resourceGroupName string = resourceGroup().name
 @description('The resource ID of the AI Foundry service.')
 output aiFoundryResourceId string = aiFoundryAiServices.outputs.resourceId
 
-// @description('The name of the SQL Database server.')
-// output sqlDbServerName string = sqlDBModule.outputs.name
+@description('The name of the SQL Database server.')
+output sqlDbServerName string = sqlDBModule.outputs.name
 
-// @description('The name of the SQL Database.')
-// output sqlDbDatabase string = sqlDbName
+@description('The name of the SQL Database.')
+output sqlDbDatabase string = sqlDbName
 
 @description('The name of the managed identity for the web application.')
 output managedIdentityWebAppName string = userAssignedIdentity.outputs.name

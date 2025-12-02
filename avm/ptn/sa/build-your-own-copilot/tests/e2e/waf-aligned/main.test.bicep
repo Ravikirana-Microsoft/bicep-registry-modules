@@ -28,7 +28,10 @@ param virtualMachineAdminPassword string = newGuid()
 var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'japaneast'
+var enforcedComosLocation = 'australiaeast'
+
+#disable-next-line no-hardcoded-location
+var enforcedCosmosReplicaLocation = 'canadacentral'
 
 // General resources
 // =================
@@ -49,7 +52,8 @@ module testDeployment '../../../main.bicep' = [
       params: {
         solutionName: take('${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}', 15)
         azureAiServiceLocation: enforcedLocation
-        cosmosLocation: enforcedSecondLocation
+        cosmosLocation: enforcedComosLocation
+        cosmosReplicaLocation: enforcedCosmosReplicaLocation
         enablePrivateNetworking: true
         enableMonitoring: true
         enablePurgeProtection: true
