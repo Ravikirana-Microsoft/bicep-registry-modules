@@ -55,6 +55,9 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: virtualMachineAdminPassword
+      gpt41ModelCapacity: 10
+      gptModelCapacity: 10
+      gptReasoningModelCapacity: 10
     }
   }
 ]
