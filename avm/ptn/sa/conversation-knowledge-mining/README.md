@@ -167,6 +167,8 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
     // Non-required parameters
+    embeddingDeploymentCapacity: 10
+    gptDeploymentCapacity: 10
     solutionName: '<solutionName>'
   }
 }
@@ -189,6 +191,12 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
       "value": "<aiServiceLocation>"
     },
     // Non-required parameters
+    "embeddingDeploymentCapacity": {
+      "value": 10
+    },
+    "gptDeploymentCapacity": {
+      "value": 10
+    },
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -209,6 +217,8 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
 // Non-required parameters
+param embeddingDeploymentCapacity = 10
+param gptDeploymentCapacity = 10
 param solutionName = '<solutionName>'
 ```
 
@@ -232,11 +242,13 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
     // Non-required parameters
+    embeddingDeploymentCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    gptDeploymentCapacity: 10
     solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -261,6 +273,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
       "value": "<aiServiceLocation>"
     },
     // Non-required parameters
+    "embeddingDeploymentCapacity": {
+      "value": 10
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -275,6 +290,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     },
     "enableTelemetry": {
       "value": true
+    },
+    "gptDeploymentCapacity": {
+      "value": 10
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -302,11 +320,13 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
 // Non-required parameters
+param embeddingDeploymentCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param gptDeploymentCapacity = 10
 param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
