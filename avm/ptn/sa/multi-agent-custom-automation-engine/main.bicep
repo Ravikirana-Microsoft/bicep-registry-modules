@@ -122,11 +122,11 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string?
+param virtualMachineAdminUsername string = ''
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string?
+param virtualMachineAdminPassword string = ''
 
 // These parameters are changed for testing - please reset as part of publication
 
@@ -149,13 +149,13 @@ param frontendContainerImageName string = 'macae-frontend'
 param frontendContainerImageTag string = 'v4tst2'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
-param MCPContainerRegistryHostname string = 'macaev3tst1acr.azurecr.io'
+param mcpContainerRegistryHostname string = 'macaev3tst1acr.azurecr.io'
 
 @description('Optional. The Container Image Name to deploy on the MCP.')
-param MCPContainerImageName string = 'mcp_server'
+param mcpContainerImageName string = 'mcp_server'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param MCPContainerImageTag string = 'v4tst1'
+param mcpContainerImageTag string = 'v4tst1'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -548,7 +548,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v4'
+var virtualMachineSize = 'Standard_D2s_v3'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
@@ -559,8 +559,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
     vmSize: virtualMachineSize
-    adminUsername: virtualMachineAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: virtualMachineAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    adminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
+    adminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
@@ -644,7 +644,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
+var keyVaultPrivateDnsZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
@@ -652,7 +652,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink.blob.core.windows.net'
   'privatelink.search.windows.net'
-  keyVaultPrivateDNSZone
+  keyVaultPrivateDnsZone
 ]
 
 // DNS Zone Index Constants
@@ -1020,8 +1020,8 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     }
     // WAF aligned configuration for Scalability
     scaleSettings: {
-      maxReplicas: enableScalability ? 3 : 1
-      minReplicas: enableScalability ? 1 : 1
+      maxReplicas: enableScalability ? 4 : 2
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
@@ -1235,8 +1235,8 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
     }
     // WAF aligned configuration for Scalability
     scaleSettings: {
-      maxReplicas: enableScalability ? 3 : 1
-      minReplicas: enableScalability ? 1 : 1
+      maxReplicas: enableScalability ? 4 : 2
+      minReplicas: 1
       rules: [
         {
           name: 'http-scaler'
@@ -1251,7 +1251,7 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'mcp'
-        image: '${MCPContainerRegistryHostname}/${MCPContainerImageName}:${MCPContainerImageTag}'
+        image: '${mcpContainerRegistryHostname}/${mcpContainerImageName}:${mcpContainerImageTag}'
         resources: {
           cpu: 2
           memory: '4Gi'

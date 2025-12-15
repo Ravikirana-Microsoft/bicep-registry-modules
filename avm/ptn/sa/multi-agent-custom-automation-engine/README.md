@@ -357,9 +357,9 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`gptReasoningModelName`](#parameter-gptreasoningmodelname) | string | Name of the GPT Reasoning model to deploy. |
 | [`gptReasoningModelVersion`](#parameter-gptreasoningmodelversion) | string | Version of the GPT Reasoning model to deploy. Defaults to 2025-04-16. |
 | [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
-| [`MCPContainerImageName`](#parameter-mcpcontainerimagename) | string | The Container Image Name to deploy on the MCP. |
-| [`MCPContainerImageTag`](#parameter-mcpcontainerimagetag) | string | The Container Image Tag to deploy on the MCP. |
-| [`MCPContainerRegistryHostname`](#parameter-mcpcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the MCP are located. |
+| [`mcpContainerImageName`](#parameter-mcpcontainerimagename) | string | The Container Image Name to deploy on the MCP. |
+| [`mcpContainerImageTag`](#parameter-mcpcontainerimagetag) | string | The Container Image Tag to deploy on the MCP. |
+| [`mcpContainerRegistryHostname`](#parameter-mcpcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the MCP are located. |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -631,7 +631,7 @@ Azure region for all services. Regions are restricted to guarantee compatibility
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `MCPContainerImageName`
+### Parameter: `mcpContainerImageName`
 
 The Container Image Name to deploy on the MCP.
 
@@ -639,7 +639,7 @@ The Container Image Name to deploy on the MCP.
 - Type: string
 - Default: `'mcp_server'`
 
-### Parameter: `MCPContainerImageTag`
+### Parameter: `mcpContainerImageTag`
 
 The Container Image Tag to deploy on the MCP.
 
@@ -647,7 +647,7 @@ The Container Image Tag to deploy on the MCP.
 - Type: string
 - Default: `'v4tst1'`
 
-### Parameter: `MCPContainerRegistryHostname`
+### Parameter: `mcpContainerRegistryHostname`
 
 The Container Registry hostname where the docker images for the MCP are located.
 
@@ -685,6 +685,7 @@ The password for the administrator account of the virtual machine. Allows to cus
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `virtualMachineAdminUsername`
 
@@ -692,6 +693,7 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ## Outputs
 

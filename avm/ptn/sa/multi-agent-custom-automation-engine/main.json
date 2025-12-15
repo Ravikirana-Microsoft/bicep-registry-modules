@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "11544845900652488829"
+      "templateHash": "11123048881893286526"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -226,14 +226,14 @@
     },
     "virtualMachineAdminUsername": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
     },
     "virtualMachineAdminPassword": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
@@ -280,21 +280,21 @@
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
     },
-    "MCPContainerRegistryHostname": {
+    "mcpContainerRegistryHostname": {
       "type": "string",
       "defaultValue": "macaev3tst1acr.azurecr.io",
       "metadata": {
         "description": "Optional. The Container Registry hostname where the docker images for the MCP are located."
       }
     },
-    "MCPContainerImageName": {
+    "mcpContainerImageName": {
       "type": "string",
       "defaultValue": "mcp_server",
       "metadata": {
         "description": "Optional. The Container Image Name to deploy on the MCP."
       }
     },
-    "MCPContainerImageTag": {
+    "mcpContainerImageTag": {
       "type": "string",
       "defaultValue": "v4tst1",
       "metadata": {
@@ -345,8 +345,8 @@
     "proximityPlacementGroupResourceName": "[format('ppg-{0}', variables('solutionSuffix'))]",
     "virtualMachineResourceName": "[format('vm-{0}', variables('solutionSuffix'))]",
     "virtualMachineAvailabilityZone": 1,
-    "virtualMachineSize": "Standard_D2s_v4",
-    "keyVaultPrivateDNSZone": "[format('privatelink.{0}', if(equals(toLower(environment().name), 'azureusgovernment'), 'vaultcore.usgovcloudapi.net', 'vaultcore.azure.net'))]",
+    "virtualMachineSize": "Standard_D2s_v3",
+    "keyVaultPrivateDnsZone": "[format('privatelink.{0}', if(equals(toLower(environment().name), 'azureusgovernment'), 'vaultcore.usgovcloudapi.net', 'vaultcore.azure.net'))]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
       "privatelink.openai.azure.com",
@@ -354,7 +354,7 @@
       "privatelink.documents.azure.com",
       "privatelink.blob.core.windows.net",
       "privatelink.search.windows.net",
-      "[variables('keyVaultPrivateDNSZone')]"
+      "[variables('keyVaultPrivateDnsZone')]"
     ],
     "dnsZoneIndex": {
       "cognitiveServices": 0,
@@ -11652,12 +11652,8 @@
           "vmSize": {
             "value": "[variables('virtualMachineSize')]"
           },
-          "adminUsername": {
-            "value": "[coalesce(parameters('virtualMachineAdminUsername'), 'JumpboxAdminUser')]"
-          },
-          "adminPassword": {
-            "value": "[coalesce(parameters('virtualMachineAdminPassword'), 'JumpboxAdminP@ssw0rd1234!')]"
-          },
+          "adminUsername": "[if(empty(parameters('virtualMachineAdminUsername')), createObject('value', 'JumpboxAdminUser'), createObject('value', parameters('virtualMachineAdminUsername')))]",
+          "adminPassword": "[if(empty(parameters('virtualMachineAdminPassword')), createObject('value', 'JumpboxAdminP@ssw0rd1234!'), createObject('value', parameters('virtualMachineAdminPassword')))]",
           "patchMode": {
             "value": "AutomaticByPlatform"
           },
@@ -26759,8 +26755,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
@@ -33805,8 +33801,8 @@
           },
           "scaleSettings": {
             "value": {
-              "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
-              "minReplicas": "[if(parameters('enableScalability'), 1, 1)]",
+              "maxReplicas": "[if(parameters('enableScalability'), 4, 2)]",
+              "minReplicas": 1,
               "rules": [
                 {
                   "name": "http-scaler",
@@ -35572,8 +35568,8 @@
           },
           "scaleSettings": {
             "value": {
-              "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
-              "minReplicas": "[if(parameters('enableScalability'), 1, 1)]",
+              "maxReplicas": "[if(parameters('enableScalability'), 4, 2)]",
+              "minReplicas": 1,
               "rules": [
                 {
                   "name": "http-scaler",
@@ -35590,7 +35586,7 @@
             "value": [
               {
                 "name": "mcp",
-                "image": "[format('{0}/{1}:{2}', parameters('MCPContainerRegistryHostname'), parameters('MCPContainerImageName'), parameters('MCPContainerImageTag'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('mcpContainerRegistryHostname'), parameters('mcpContainerImageName'), parameters('mcpContainerImageTag'))]",
                 "resources": {
                   "cpu": 2,
                   "memory": "4Gi"
