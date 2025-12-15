@@ -53,14 +53,14 @@ param gptModelName string = 'gpt-4.1-mini'
 param gptModelVersion string = '2025-04-14'
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy:')
-param gpt4_1ModelName string = 'gpt-4.1'
+@description('Optional. Name of the GPT model to deploy.')
+param gpt41ModelName string = 'gpt-4.1'
 
 @description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
-param gpt4_1ModelVersion string = '2025-04-14'
+param gpt41ModelVersion string = '2025-04-14'
 
 @minLength(1)
-@description('Optional. Name of the GPT Reasoning model to deploy:')
+@description('Optional. Name of the GPT Reasoning model to deploy.')
 param gptReasoningModelName string = 'o4-mini'
 
 @description('Optional. Version of the GPT Reasoning model to deploy. Defaults to 2025-04-16.')
@@ -78,7 +78,7 @@ param azureAiAgentAPIVersion string = '2025-01-01-preview'
   'GlobalStandard'
 ])
 @description('Optional. GPT model deployment type. Defaults to GlobalStandard.')
-param gpt4_1ModelDeploymentType string = 'GlobalStandard'
+param gpt41ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
 @allowed([
@@ -100,7 +100,7 @@ param gptReasoningModelDeploymentType string = 'GlobalStandard'
 param gptModelCapacity int = 50
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
-param gpt4_1ModelCapacity int = 150
+param gpt41ModelCapacity int = 150
 
 @description('Optional. AI model deployment token capacity. Defaults to 50 for optimal performance.')
 param gptReasoningModelCapacity int = 50
@@ -697,13 +697,13 @@ var aiFoundryAiServicesModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-var aiFoundryAiServices4_1ModelDeployment = {
+var aiFoundryAiServices41ModelDeployment = {
   format: 'OpenAI'
-  name: gpt4_1ModelName
-  version: gpt4_1ModelVersion
+  name: gpt41ModelName
+  version: gpt41ModelVersion
   sku: {
-    name: gpt4_1ModelDeploymentType
-    capacity: gpt4_1ModelCapacity
+    name: gpt41ModelDeploymentType
+    capacity: gpt41ModelCapacity
   }
   raiPolicyName: 'Microsoft.Default'
 }
@@ -717,7 +717,7 @@ var aiFoundryAiServicesReasoningModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2' = {
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -747,16 +747,16 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         }
       }
       {
-        name: aiFoundryAiServices4_1ModelDeployment.name
+        name: aiFoundryAiServices41ModelDeployment.name
         model: {
-          format: aiFoundryAiServices4_1ModelDeployment.format
-          name: aiFoundryAiServices4_1ModelDeployment.name
-          version: aiFoundryAiServices4_1ModelDeployment.version
+          format: aiFoundryAiServices41ModelDeployment.format
+          name: aiFoundryAiServices41ModelDeployment.name
+          version: aiFoundryAiServices41ModelDeployment.version
         }
-        raiPolicyName: aiFoundryAiServices4_1ModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServices41ModelDeployment.raiPolicyName
         sku: {
-          name: aiFoundryAiServices4_1ModelDeployment.sku.name
-          capacity: aiFoundryAiServices4_1ModelDeployment.sku.capacity
+          name: aiFoundryAiServices41ModelDeployment.sku.name
+          capacity: aiFoundryAiServices41ModelDeployment.sku.capacity
         }
       }
       {
@@ -946,7 +946,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionSuffix}'
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3' = {
   name: take('avm.res.app.managed-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
@@ -1068,7 +1068,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
           }
           {
             name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
-            value: aiFoundryAiServices4_1ModelDeployment.name
+            value: aiFoundryAiServices41ModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -1496,6 +1496,7 @@ module searchService 'br/public:avm/res/search/search-service:0.12.0' = {
   name: take('avm.res.search.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'

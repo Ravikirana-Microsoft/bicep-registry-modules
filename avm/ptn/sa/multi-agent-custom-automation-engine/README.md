@@ -73,6 +73,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Maintenance/maintenanceConfigurations` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -92,10 +93,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
@@ -343,17 +344,17 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gpt4_1ModelCapacity`](#parameter-gpt4_1modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
-| [`gpt4_1ModelDeploymentType`](#parameter-gpt4_1modeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
-| [`gpt4_1ModelName`](#parameter-gpt4_1modelname) | string | Name of the GPT model to deploy: |
-| [`gpt4_1ModelVersion`](#parameter-gpt4_1modelversion) | string | Version of the GPT model to deploy. Defaults to 2025-04-14. |
+| [`gpt41ModelCapacity`](#parameter-gpt41modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
+| [`gpt41ModelDeploymentType`](#parameter-gpt41modeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
+| [`gpt41ModelName`](#parameter-gpt41modelname) | string | Name of the GPT model to deploy. |
+| [`gpt41ModelVersion`](#parameter-gpt41modelversion) | string | Version of the GPT model to deploy. Defaults to 2025-04-14. |
 | [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 50 for optimal performance. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2025-04-14. |
 | [`gptReasoningModelCapacity`](#parameter-gptreasoningmodelcapacity) | int | AI model deployment token capacity. Defaults to 50 for optimal performance. |
 | [`gptReasoningModelDeploymentType`](#parameter-gptreasoningmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
-| [`gptReasoningModelName`](#parameter-gptreasoningmodelname) | string | Name of the GPT Reasoning model to deploy: |
+| [`gptReasoningModelName`](#parameter-gptreasoningmodelname) | string | Name of the GPT Reasoning model to deploy. |
 | [`gptReasoningModelVersion`](#parameter-gptreasoningmodelversion) | string | Version of the GPT Reasoning model to deploy. Defaults to 2025-04-16. |
 | [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`MCPContainerImageName`](#parameter-mcpcontainerimagename) | string | The Container Image Name to deploy on the MCP. |
@@ -505,7 +506,7 @@ The Container Registry hostname where the docker images for the frontend are loc
 - Type: string
 - Default: `'macaev3tst1acr.azurecr.io'`
 
-### Parameter: `gpt4_1ModelCapacity`
+### Parameter: `gpt41ModelCapacity`
 
 AI model deployment token capacity. Defaults to 150 for optimal performance.
 
@@ -513,7 +514,7 @@ AI model deployment token capacity. Defaults to 150 for optimal performance.
 - Type: int
 - Default: `150`
 
-### Parameter: `gpt4_1ModelDeploymentType`
+### Parameter: `gpt41ModelDeploymentType`
 
 GPT model deployment type. Defaults to GlobalStandard.
 
@@ -528,15 +529,15 @@ GPT model deployment type. Defaults to GlobalStandard.
   ]
   ```
 
-### Parameter: `gpt4_1ModelName`
+### Parameter: `gpt41ModelName`
 
-Name of the GPT model to deploy:
+Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
 - Default: `'gpt-4.1'`
 
-### Parameter: `gpt4_1ModelVersion`
+### Parameter: `gpt41ModelVersion`
 
 Version of the GPT model to deploy. Defaults to 2025-04-14.
 
@@ -608,7 +609,7 @@ GPT model deployment type. Defaults to GlobalStandard.
 
 ### Parameter: `gptReasoningModelName`
 
-Name of the GPT Reasoning model to deploy:
+Name of the GPT Reasoning model to deploy.
 
 - Required: No
 - Type: string
@@ -756,9 +757,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2` | Remote reference |
+| `br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1` | Remote reference |
 | `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
 | `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.21.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
