@@ -494,15 +494,6 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
-            eventLogName: 'Security'
-            eventTypes: [
-              {
-                eventType: 'Audit Success'
-              }
-              {
-                eventType: 'Audit Failure'
-              }
-            ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -585,8 +576,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
     nicConfigurations: [
       {
         name: 'nic-${virtualMachineResourceName}'
-        //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
-        //nicSuffix: 'nic-${virtualMachineResourceName}'
         tags: tags
         deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
@@ -604,9 +593,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
       }
     ]
     extensionAadJoinConfig: {
-      enabled: true
-      tags: tags
-      typeHandlerVersion: '1.0'
+      enabled: false
     }
     extensionAntiMalwareConfig: {
       enabled: true
