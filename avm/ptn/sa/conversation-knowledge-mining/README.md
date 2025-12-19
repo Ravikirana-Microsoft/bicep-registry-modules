@@ -63,8 +63,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Maintenance/maintenanceConfigurations` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -83,11 +83,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
@@ -102,8 +100,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
-| `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
+| `Microsoft.Search/searchServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices)</li></ul> |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices/sharedPrivateLinkResources)</li></ul> |
 | `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
 | `Microsoft.Sql/servers` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers)</li></ul> |
 | `Microsoft.Sql/servers/auditingSettings` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings)</li></ul> |
@@ -163,9 +161,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
-    location: '<location>'
     usecase: 'telecom'
     // Non-required parameters
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -187,13 +185,13 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "aiServiceLocation": {
       "value": "<aiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "usecase": {
       "value": "telecom"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -213,9 +211,9 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
-param location = '<location>'
 param usecase = 'telecom'
 // Non-required parameters
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -238,7 +236,6 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     aiServiceLocation: '<aiServiceLocation>'
-    location: '<location>'
     usecase: 'telecom'
     // Non-required parameters
     enableMonitoring: true
@@ -246,6 +243,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    location: '<location>'
     solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -269,9 +267,6 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "aiServiceLocation": {
       "value": "<aiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "usecase": {
       "value": "telecom"
     },
@@ -290,6 +285,9 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -316,7 +314,6 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param aiServiceLocation = '<aiServiceLocation>'
-param location = '<location>'
 param usecase = 'telecom'
 // Non-required parameters
 param enableMonitoring = true
@@ -324,6 +321,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param location = '<location>'
 param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -339,8 +337,7 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiServiceLocation`](#parameter-aiservicelocation) | string | Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
-| [`usecase`](#parameter-usecase) | string | Industry use case for deployment: |
+| [`usecase`](#parameter-usecase) | string | Industry use case for deployment. |
 
 **Optional parameters**
 
@@ -348,13 +345,13 @@ param vmAdminUsername = 'adminuser'
 | :-- | :-- | :-- |
 | [`azureAiAgentApiVersion`](#parameter-azureaiagentapiversion) | string | Version of AI Agent API. |
 | [`azureContentUnderstandingApiVersion`](#parameter-azurecontentunderstandingapiversion) | string | Version of Content Understanding API. |
-| [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Version of the OpenAI. |
+| [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Version of the Azure OpenAI API. |
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment: |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment. |
 | [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
-| [`createdBy`](#parameter-createdby) | string | created by user name. |
+| [`createdBy`](#parameter-createdby) | string | Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -369,8 +366,9 @@ param vmAdminUsername = 'adminuser'
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2). |
-| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long: |
+| [`location`](#parameter-location) | string | Azure region for all services. Allowed values: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
+| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation (example: eastus2). |
+| [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
@@ -398,29 +396,9 @@ Location for AI Foundry deployment. This is the location where the AI Foundry re
   ]
   ```
 
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
-
 ### Parameter: `usecase`
 
-Industry use case for deployment:
+Industry use case for deployment.
 
 - Required: Yes
 - Type: string
@@ -450,7 +428,7 @@ Version of Content Understanding API.
 
 ### Parameter: `azureOpenAIApiVersion`
 
-Version of the OpenAI.
+Version of the Azure OpenAI API.
 
 - Required: No
 - Type: string
@@ -482,7 +460,7 @@ The Container Registry hostname where the docker images for the backend are loca
 
 ### Parameter: `contentUnderstandingLocation`
 
-Location for the Content Understanding service deployment:
+Location for the Content Understanding service deployment.
 
 - Required: No
 - Type: string
@@ -505,7 +483,7 @@ Location for the Cosmos DB replica deployment. This location is used when enable
 
 ### Parameter: `createdBy`
 
-created by user name.
+Created by user name.
 
 - Required: No
 - Type: string
@@ -638,9 +616,17 @@ Version of the GPT model to deploy.
 - Type: string
 - Default: `'2024-07-18'`
 
+### Parameter: `location`
+
+Azure region for all services. Allowed values: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `secondaryLocation`
 
-Secondary location for databases creation(example:eastus2).
+Secondary location for databases creation (example: eastus2).
 
 - Required: No
 - Type: string
@@ -648,7 +634,7 @@ Secondary location for databases creation(example:eastus2).
 
 ### Parameter: `solutionName`
 
-A unique prefix for all resources in this deployment. This should be 3-20 characters long:
+A unique prefix for all resources in this deployment. This should be 3-20 characters long.
 
 - Required: No
 - Type: string
@@ -762,7 +748,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.14.2` | Remote reference |
-| `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
+| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
 | `br/public:avm/res/sql/server:0.21.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.31.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.5.0` | Remote reference |

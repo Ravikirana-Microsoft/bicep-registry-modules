@@ -13,22 +13,12 @@ metadata description = '''This module deploys the [Conversation Knowledge Mining
 // ========== Parameters ========== //
 @minLength(3)
 @maxLength(16)
-@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long:')
+@description('Optional. A unique prefix for all resources in this deployment. This should be 3-20 characters long.')
 param solutionName string = 'kmgen'
 
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+@description('Optional. Azure region for all services. Allowed values: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+param location string = resourceGroup().location
 
 @allowed([
   'australiaeast'
@@ -54,7 +44,7 @@ param location string
 param aiServiceLocation string
 
 @minLength(1)
-@description('Required. Industry use case for deployment:')
+@description('Required. Industry use case for deployment.')
 @allowed([
   'telecom'
   'IT_helpdesk'
@@ -62,7 +52,7 @@ param aiServiceLocation string
 param usecase string
 
 @minLength(1)
-@description('Optional. Location for the Content Understanding service deployment:')
+@description('Optional. Location for the Content Understanding service deployment.')
 @allowed(['swedencentral', 'australiaeast'])
 @metadata({
   azd: {
@@ -72,7 +62,7 @@ param usecase string
 param contentUnderstandingLocation string = 'swedencentral'
 
 @minLength(1)
-@description('Optional. Secondary location for databases creation(example:eastus2).')
+@description('Optional. Secondary location for databases creation (example: eastus2).')
 param secondaryLocation string = 'eastus2'
 
 @description('Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
@@ -92,7 +82,7 @@ param gptModelName string = 'gpt-4o-mini'
 @description('Optional. Version of the GPT model to deploy.')
 param gptModelVersion string = '2024-07-18'
 
-@description('Optional. Version of the OpenAI.')
+@description('Optional. Version of the Azure OpenAI API.')
 param azureOpenAIApiVersion string = '2025-01-01-preview'
 
 @description('Optional. Version of AI Agent API.')
@@ -165,7 +155,7 @@ param vmAdminPassword string?
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = 'Standard_DS2_v2'
 
-@description('Optional. created by user name.')
+@description('Optional. Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')? split(deployer().userPrincipalName, '@')[0]: deployer().objectId
 
 @maxLength(5)
@@ -676,12 +666,12 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
 
 // AI Foundry: AI Services Content Understanding
 var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
-var aiServicesName_cu = 'aisa-${solutionSuffix}-cu'
+var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
 module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
   params: {
-    name: aiServicesName_cu
+    name: aiServicesNameCu
     location: contentUnderstandingLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -695,7 +685,7 @@ module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1'
     }
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-    customSubDomainName: aiServicesName_cu
+    customSubDomainName: aiServicesNameCu
     apiProperties: {
       // staticsEnabled: false
     }
@@ -738,11 +728,12 @@ module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1'
 // ========== AVM WAF ========== //
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
-module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
+module searchSearchServices 'br/public:avm/res/search/search-service:0.12.0' = {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
     // Required parameters
     name: aiSearchName
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
@@ -754,7 +745,7 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
       }
     ] : null
     disableLocalAuth: false
-    hostingMode: 'default'
+    hostingMode: 'Default'
     managedIdentities: {
       systemAssigned: true
     }
@@ -1105,6 +1096,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
   params: {
     // Required parameters
     name: sqlServerResourceName
+    enableTelemetry: enableTelemetry
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
