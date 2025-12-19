@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
 param serviceShort string = 'sckmsb'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'namePrefix'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -29,9 +29,6 @@ var enforcedLocation = 'australiaeast'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: enforcedLocation
-  tags: {
-    SecurityControl: 'Ignore'
-  }
 }
 
 // ============== //

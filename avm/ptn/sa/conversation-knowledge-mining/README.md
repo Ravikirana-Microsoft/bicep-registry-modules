@@ -145,7 +145,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/conversation-knowledge-mining:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -222,7 +222,10 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _WAF-aligned configuration with default parameter values_
+
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
@@ -231,65 +234,99 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-// targetScope = 'subscription'
+module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
+  params: {
+    // Required parameters
+    aiServiceLocation: '<aiServiceLocation>'
+    location: '<location>'
+    usecase: 'telecom'
+    // Non-required parameters
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableRedundancy: true
+    enableScalability: true
+    enableTelemetry: true
+    solutionName: '<solutionName>'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
+  }
+}
+```
 
-// metadata name = 'WAF-aligned configuration with default parameter values'
-// metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.'
+</details>
+<p>
 
-// // ========== //
-// // Parameters //
-// // ========== //
+<details>
 
-// @sys.description('Optional. The name of the resource group to deploy for testing purposes.')
-// @maxLength(90)
-// param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
+<summary>via JSON parameters file</summary>
 
-// @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// param serviceShort string = 'sckmswaf'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiServiceLocation": {
+      "value": "<aiServiceLocation>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "usecase": {
+      "value": "telecom"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
+    }
+  }
+}
+```
 
-// @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-// param namePrefix string = '#_namePrefix_#'
+</details>
+<p>
 
-// @description('Optional. The password used for VM authentication.')
-// @secure()
-// param vmAdminPassword string = newGuid()
+<details>
 
-// // ============ //
-// // Dependencies //
-// // ============ //
+<summary>via Bicep parameters file</summary>
 
-// #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-// var enforcedLocation = 'australiaeast'
+```bicep-params
+using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
-// // General resources
-// // =================
-// resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
-//   name: resourceGroupName
-//   location: enforcedLocation
-// }
-
-// // ============== //
-// // Test Execution //
-// // ============== //
-
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       solutionName: take('${namePrefix}${serviceShort}001', 16)
-//       aiServiceLocation: enforcedLocation
-//       enableScalability: true
-//       enableTelemetry: true
-//       enableMonitoring: true
-//       enablePrivateNetworking: true
-//       enableRedundancy: true
-//       vmAdminUsername: 'adminuser'
-//       vmAdminPassword: vmAdminPassword
-//     }
-//   }
-// ]
+// Required parameters
+param aiServiceLocation = '<aiServiceLocation>'
+param location = '<location>'
+param usecase = 'telecom'
+// Non-required parameters
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableRedundancy = true
+param enableScalability = true
+param enableTelemetry = true
+param solutionName = '<solutionName>'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
