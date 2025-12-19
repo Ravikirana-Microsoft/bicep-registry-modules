@@ -1124,7 +1124,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
           family: 'Gen5'
           capacity: 2
         }
-        zoneRedundant: enableRedundancy
+        // Note: Zone redundancy is not supported for serverless SKUs (GP_S_Gen5)
+        zoneRedundant: false
         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
       }
     ]
