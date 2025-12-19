@@ -685,7 +685,7 @@ module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1'
       ipRules: []
     }
     managedIdentities: { userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
-    disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
+    disableLocalAuth: true
     customSubDomainName: aiServicesNameCu
     apiProperties: {
       // staticsEnabled: false
@@ -745,7 +745,7 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.12.0' = {
         workspaceResourceId: logAnalyticsWorkspaceResourceId
       }
     ] : null
-    disableLocalAuth: false
+    disableLocalAuth: true
     hostingMode: 'Default'
     managedIdentities: {
       systemAssigned: true
