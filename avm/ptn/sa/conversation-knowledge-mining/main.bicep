@@ -407,7 +407,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enable
     osDisk: {
       name: 'osdisk-${jumpboxVmName}'
       managedDisk: {
-        storageAccountType: 'Standard_LRS'
+        // WAF aligned configuration - Use Premium storage for improved SLA (PSRule Azure.VM.Standalone)
+        storageAccountType: 'Premium_LRS'
       }
     }
     availabilityZone: -1
@@ -791,7 +792,7 @@ module searchSearchServices 'br/public:avm/res/search/search-service:0.12.0' = {
       }
     ]
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: 3
     sku: 'standard'
     semanticSearch: 'free'
     // Use the deployment tags provided to the template
