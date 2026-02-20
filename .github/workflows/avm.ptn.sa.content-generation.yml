@@ -25,7 +25,7 @@ on:
   push:
     branches:
       - main
-      - avm/ptn/sa/content-generation # Temporary: for testing before merge
+      - avm-ptn-sa-content-generation # Temporary: for testing before merge
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
