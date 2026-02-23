@@ -545,7 +545,7 @@ var productImagesContainer = 'product-images'
 var generatedImagesContainer = 'generated-images'
 var dataContainer = 'data'
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.31.1' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
