@@ -30,6 +30,20 @@ param secondaryLocation string = 'uksouth'
 
 // NOTE: Metadata must be compile-time constants. Update usageName manually if you change model parameters.
 // Format: 'OpenAI.<DeploymentType>.<ModelName>,<Capacity>'
+// Allowed regions: Union of GPT-5.1, gpt-image-1, and gpt-image-1.5 GlobalStandard availability
+@allowed([
+  'australiaeast'
+  'canadaeast'
+  'eastus2'
+  'japaneast'
+  'koreacentral'
+  'polandcentral'
+  'swedencentral'
+  'switzerlandnorth'
+  'uaenorth'
+  'uksouth'
+  'westus3'
+])
 @metadata({
   azd: {
     type: 'location'
@@ -225,6 +239,7 @@ var imageModelDeployment = imageModelChoice != 'none'
 var aiFoundryAiServicesModelDeployment = concat(baseModelDeployments, imageModelDeployment)
 
 var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
+var existingTags = resourceGroup().tags ?? {}
 
 // ============== //
 // Resources      //
@@ -253,13 +268,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: {
-      ...resourceGroup().tags
-      ...tags
-      TemplateName: 'ContentGen'
-      Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
-      CreatedBy: createdBy
-    }
+    tags: union(
+      existingTags,
+      tags,
+      {
+        TemplateName: 'ContentGen'
+        Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
+        CreatedBy: createdBy
+      }
+    )
   }
 }
 

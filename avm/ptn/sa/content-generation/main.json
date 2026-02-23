@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14396708014399575162"
+      "templateHash": "10951684677840299559"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -49,6 +49,19 @@
     },
     "azureAiServiceLocation": {
       "type": "string",
+      "allowedValues": [
+        "australiaeast",
+        "canadaeast",
+        "eastus2",
+        "japaneast",
+        "koreacentral",
+        "polandcentral",
+        "swedencentral",
+        "switzerlandnorth",
+        "uaenorth",
+        "uksouth",
+        "westus3"
+      ],
       "metadata": {
         "azd": {
           "type": "location",
@@ -278,6 +291,7 @@
     "imageModelDeployment": "[if(not(equals(parameters('imageModelChoice'), 'none')), createArray(createObject('format', 'OpenAI', 'name', variables('imageModelConfig')[parameters('imageModelChoice')].name, 'model', variables('imageModelConfig')[parameters('imageModelChoice')].name, 'sku', createObject('name', variables('imageModelConfig')[parameters('imageModelChoice')].sku, 'capacity', parameters('imageModelCapacity')), 'version', variables('imageModelConfig')[parameters('imageModelChoice')].version, 'raiPolicyName', 'Microsoft.Default')), createArray())]",
     "aiFoundryAiServicesModelDeployment": "[concat(variables('baseModelDeployments'), variables('imageModelDeployment'))]",
     "aiFoundryAiProjectDescription": "Content Generation AI Foundry Project",
+    "existingTags": "[coalesce(resourceGroup().tags, createObject())]",
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
@@ -334,7 +348,7 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": "[shallowMerge(createArray(resourceGroup().tags, parameters('tags'), createObject('TemplateName', 'ContentGen', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'))))]"
+        "tags": "[union(variables('existingTags'), parameters('tags'), createObject('TemplateName', 'ContentGen', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy')))]"
       }
     },
     "aiSearchFoundryConnection": {

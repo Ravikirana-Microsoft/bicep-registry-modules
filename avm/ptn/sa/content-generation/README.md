@@ -319,6 +319,22 @@ Location for AI deployments.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'australiaeast'
+    'canadaeast'
+    'eastus2'
+    'japaneast'
+    'koreacentral'
+    'polandcentral'
+    'swedencentral'
+    'switzerlandnorth'
+    'uaenorth'
+    'uksouth'
+    'westus3'
+  ]
+  ```
 
 ### Parameter: `acrName`
 
