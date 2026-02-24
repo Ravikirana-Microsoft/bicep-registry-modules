@@ -239,7 +239,14 @@ var imageModelDeployment = imageModelChoice != 'none'
 var aiFoundryAiServicesModelDeployment = concat(baseModelDeployments, imageModelDeployment)
 
 var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
-var existingTags = resourceGroup().tags ?? {}
+
+// Reference existing resource group to access current tags
+resource existingResourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' existing = {
+  scope: subscription()
+  name: resourceGroup().name
+}
+
+var existingTags = existingResourceGroup.tags ?? {}
 
 // ============== //
 // Resources      //
@@ -268,15 +275,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: union(
-      existingTags,
-      tags,
-      {
-        TemplateName: 'ContentGen'
-        Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
-        CreatedBy: createdBy
-      }
-    )
+    tags: union(existingTags, tags, {
+      TemplateName: 'ContentGen'
+      Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
+      CreatedBy: createdBy
+    })
   }
 }
 
@@ -603,7 +606,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.31.1' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     }
     allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
