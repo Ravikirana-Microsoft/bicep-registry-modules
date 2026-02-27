@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated AKS (Azure Kubernetes Service) version to the latest 1.34.2
 
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
