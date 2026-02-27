@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "4965365894348224351"
+      "templateHash": "4533246011201387729"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -33,6 +33,14 @@
       "defaultValue": "canadacentral",
       "metadata": {
         "description": "Optional. Secondary location for Cosmos DB redundancy. This location is used when enableRedundancy is set to true."
+      }
+    },
+    "secondaryLocation": {
+      "type": "string",
+      "defaultValue": "uksouth",
+      "minLength": 3,
+      "metadata": {
+        "description": "Optional. Secondary location for databases creation."
       }
     },
     "solutionUniqueToken": {
@@ -216,7 +224,7 @@
       "uksouth": "westeurope",
       "westeurope": "northeurope"
     },
-    "replicaLocation": "[tryGet(variables('replicaRegionPairs'), variables('solutionLocation'))]",
+    "replicaLocation": "[coalesce(tryGet(variables('replicaRegionPairs'), variables('solutionLocation')), parameters('secondaryLocation'))]",
     "regionAbbreviations": {
       "australiaeast": "aue",
       "australiasoutheast": "ause",
