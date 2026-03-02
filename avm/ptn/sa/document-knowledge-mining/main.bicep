@@ -21,10 +21,6 @@ param location string = resourceGroup().location
 @description('Optional. Secondary location for Cosmos DB redundancy. This location is used when enableRedundancy is set to true.')
 param cosmosReplicaLocation string = 'canadacentral'
 
-@minLength(3)
-@description('Optional. Secondary location for databases creation.')
-param secondaryLocation string = 'uksouth'
-
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
 param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
@@ -154,7 +150,7 @@ var replicaRegionPairs = {
   uksouth: 'westeurope'
   westeurope: 'northeurope'
 }
-var replicaLocation = replicaRegionPairs[?solutionLocation] ?? secondaryLocation
+var replicaLocation = replicaRegionPairs[?solutionLocation]
 
 // Region abbreviations for creating shorter replica names
 var regionAbbreviations = {

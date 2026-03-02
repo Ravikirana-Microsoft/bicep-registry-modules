@@ -373,7 +373,6 @@ param location = '<location>'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
 | [`location`](#parameter-location) | string | Azure location for the solution. If not provided, it defaults to the resource group location. |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation. |
 | [`solutionName`](#parameter-solutionname) | string | A unique prefix for all resources in this deployment. This should be 3-20 characters long. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -536,14 +535,6 @@ Azure location for the solution. If not provided, it defaults to the resource gr
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `secondaryLocation`
-
-Secondary location for databases creation.
-
-- Required: No
-- Type: string
-- Default: `'uksouth'`
 
 ### Parameter: `solutionName`
 
