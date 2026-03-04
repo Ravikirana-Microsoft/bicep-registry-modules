@@ -292,6 +292,7 @@ param solutionName = '<solutionName>'
 | [`acrName`](#parameter-acrname) | string | The existing Container Registry name (without .azurecr.io). Must contain pre-built images: content-gen-app and content-gen-api. |
 | [`azureAiAgentApiVersion`](#parameter-azureaiagentapiversion) | string | API version for Azure AI Agent service. |
 | [`azureOpenaiAPIVersion`](#parameter-azureopenaiapiversion) | string | API version for Azure OpenAI service. |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
 | [`createdBy`](#parameter-createdby) | string | Created by user name. |
 | [`deployBastionAndJumpbox`](#parameter-deploybastionandjumpbox) | bool | Deploy Azure Bastion and Jumpbox VM for private network administration. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring for applicable resources (WAF-aligned). |
@@ -359,6 +360,14 @@ API version for Azure OpenAI service.
 - Required: No
 - Type: string
 - Default: `'2025-01-01-preview'`
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
+
+- Required: No
+- Type: string
+- Default: `'canadacentral'`
 
 ### Parameter: `createdBy`
 

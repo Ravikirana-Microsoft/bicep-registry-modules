@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "6386968359044768864"
+      "version": "0.41.2.15936",
+      "templateHash": "11247443361664387465"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -45,6 +45,13 @@
       "minLength": 3,
       "metadata": {
         "description": "Optional. Secondary location for databases creation."
+      }
+    },
+    "cosmosDbReplicaLocation": {
+      "type": "string",
+      "defaultValue": "canadacentral",
+      "metadata": {
+        "description": "Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true."
       }
     },
     "azureAiServiceLocation": {
@@ -237,7 +244,6 @@
       "westus": "westus3",
       "westus3": "westus"
     },
-    "cosmosDbHaLocation": "[coalesce(tryGet(variables('cosmosDbZoneRedundantHaRegionPairs'), resourceGroup().location), parameters('secondaryLocation'))]",
     "replicaRegionPairs": {
       "australiaeast": "australiasoutheast",
       "centralus": "westus",
@@ -4818,8 +4824,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "18254349806162838802"
+              "version": "0.41.2.15936",
+              "templateHash": "13822613177861506290"
             }
           },
           "parameters": {
@@ -13946,8 +13952,8 @@
       },
       "dependsOn": [
         "aiFoundryAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },
@@ -13983,8 +13989,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "314947505300789658"
+              "version": "0.41.2.15936",
+              "templateHash": "12145366722831710017"
             }
           },
           "parameters": {
@@ -24302,7 +24308,7 @@
           "enableAutomaticFailover": {
             "value": "[parameters('enableRedundancy')]"
           },
-          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('secondaryLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', variables('cosmosDbHaLocation')))), createObject('value', createArray(createObject('locationName', parameters('secondaryLocation'), 'failoverPriority', 0, 'isZoneRedundant', false()))))]",
+          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('secondaryLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosDbReplicaLocation')))), createObject('value', createArray(createObject('locationName', parameters('secondaryLocation'), 'failoverPriority', 0, 'isZoneRedundant', false()))))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('service', 'Sql', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)).outputs.resourceId.value)))))), createObject('value', null()))]"
         },
         "template": {
@@ -30957,8 +30963,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "12090979410672091248"
+              "version": "0.41.2.15936",
+              "templateHash": "8373975196748337393"
             }
           },
           "definitions": {
@@ -31986,8 +31992,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.40.2.10011",
-                      "templateHash": "16113982201888016203"
+                      "version": "0.41.2.15936",
+                      "templateHash": "5518029515589119726"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -33007,8 +33013,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10099291518724984652"
+              "version": "0.41.2.15936",
+              "templateHash": "4952237836308528733"
             }
           },
           "parameters": {

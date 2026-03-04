@@ -28,6 +28,9 @@ param location string = resourceGroup().location
 @description('Optional. Secondary location for databases creation.')
 param secondaryLocation string = 'uksouth'
 
+@description('Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string = 'canadacentral'
+
 // NOTE: Metadata must be compile-time constants. Update usageName manually if you change model parameters.
 // Format: 'OpenAI.<DeploymentType>.<ModelName>,<Capacity>'
 // Allowed regions: Union of GPT-5.1, gpt-image-1, and gpt-image-1.5 GlobalStandard availability
@@ -159,7 +162,6 @@ var cosmosDbZoneRedundantHaRegionPairs = {
   westus: 'westus3'
   westus3: 'westus'
 }
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[?resourceGroup().location] ?? secondaryLocation
 
 var replicaRegionPairs = {
   australiaeast: 'australiasoutheast'
@@ -697,7 +699,7 @@ module cosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosDbReplicaLocation
           }
         ]
       : [
