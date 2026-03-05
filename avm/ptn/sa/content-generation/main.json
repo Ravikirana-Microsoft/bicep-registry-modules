@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "11247443361664387465"
+      "templateHash": "8917481675433500633"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -45,13 +45,6 @@
       "minLength": 3,
       "metadata": {
         "description": "Optional. Secondary location for databases creation."
-      }
-    },
-    "cosmosDbReplicaLocation": {
-      "type": "string",
-      "defaultValue": "canadacentral",
-      "metadata": {
-        "description": "Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true."
       }
     },
     "azureAiServiceLocation": {
@@ -225,25 +218,19 @@
       "metadata": {
         "description": "Optional. Created by user name."
       }
+    },
+    "cosmosDbReplicaLocation": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true."
+      }
     }
   },
   "variables": {
     "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "acrResourceName": "[parameters('acrName')]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
-    "cosmosDbZoneRedundantHaRegionPairs": {
-      "australiaeast": "uksouth",
-      "centralus": "eastus2",
-      "eastasia": "southeastasia",
-      "eastus": "centralus",
-      "eastus2": "centralus",
-      "japaneast": "australiaeast",
-      "northeurope": "westeurope",
-      "southeastasia": "eastasia",
-      "uksouth": "westeurope",
-      "westus": "westus3",
-      "westus3": "westus"
-    },
     "replicaRegionPairs": {
       "australiaeast": "australiasoutheast",
       "centralus": "westus",
