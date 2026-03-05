@@ -204,6 +204,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -231,6 +232,9 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "cosmosDbReplicaLocation": {
+      "value": "canadacentral"
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -266,6 +270,7 @@ using 'br/public:avm/ptn/sa/content-generation:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true

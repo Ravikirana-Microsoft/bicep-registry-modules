@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       enableScalability: true
       enablePrivateNetworking: true
+      cosmosDbReplicaLocation: 'canadacentral'
     }
   }
 ]
