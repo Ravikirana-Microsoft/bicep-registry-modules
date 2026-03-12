@@ -2,6 +2,13 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/chat-with-your-data/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated default app version to 'latest_waf_2026-03-10_3951' in main.bicep.
+- Updated semanticKernelSystemPrompt
+
 ## 0.2.0
 
 ### Changes
