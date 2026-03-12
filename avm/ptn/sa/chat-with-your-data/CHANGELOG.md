@@ -9,6 +9,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated default app version to 'latest_waf_2026-03-10_3951' in main.bicep.
 - Updated semanticKernelSystemPrompt
 
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

@@ -112,68 +112,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Sandbox With Azure Cosmos DB](#example-2-sandbox-with-azure-cosmos-db)
-- [Sandbox With Azure Database for PostgreSQL flexible servers](#example-3-sandbox-with-azure-database-for-postgresql-flexible-servers)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Sandbox With Azure Cosmos DB](#example-1-sandbox-with-azure-cosmos-db)
+- [Sandbox With Azure Database for PostgreSQL flexible servers](#example-2-sandbox-with-azure-database-for-postgresql-flexible-servers)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  params: {
-    location: '<location>'
-    name: 'scwydmin001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    },
-    "name": {
-      "value": "scwydmin001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param location = '<location>'
-param name = 'scwydmin001'
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox With Azure Cosmos DB_
+### Example 1: _Sandbox With Azure Cosmos DB_
 
 This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.
 
@@ -247,7 +190,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 3: _Sandbox With Azure Database for PostgreSQL flexible servers_
+### Example 2: _Sandbox With Azure Database for PostgreSQL flexible servers_
 
 This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.
 
@@ -316,7 +259,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
 
