@@ -2,14 +2,7 @@
 targetScope = 'resourceGroup'
 
 metadata name = 'Content Processing Solution Accelerator'
-metadata description = '''This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.
-
-|**Post-Deployment Step** |
-|-------------|
-| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
-
-> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
-'''
+metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
 // ========== Parameters ========== //
 @minLength(3)
@@ -60,7 +53,7 @@ param contentUnderstandingLocation string = 'WestUS'
     ]
   }
 })
-param aiServiceLocation string
+param azureAiServiceLocation string
 
 @description('Optional. Type of GPT deployment to use: Standard | GlobalStandard.')
 @minLength(1)
@@ -84,8 +77,8 @@ param gptModelVersion string = '2025-11-13'
 @description('Optional. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int = 300
 
-@description('Optional. The public container image endpoint.')
-param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
+@description('Optional. The container registry login server/endpoint for the container images (for example, an Azure Container Registry endpoint).')
+param containerRegistryEndpoint string = 'cpscontainerreg.azurecr.io'
 
 @description('Optional. The image tag for the container images.')
 param imageTag string = 'latest_v2'
@@ -113,6 +106,12 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
+
+@description('Optional: Existing Log Analytics Workspace Resource ID')
+param existingLogAnalyticsWorkspaceId string = ''
+
+@description('Use this parameter to use an existing AI project resource ID')
+param existingFoundryProjectResourceId string = ''
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = ''
@@ -142,9 +141,11 @@ var solutionSuffix = toLower(trim(replace(
 // Resources      //
 // ============== //
 
+var existingProjectResourceId = trim(existingFoundryProjectResourceId)
+
 // ========== AVM Telemetry ========== //
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.ptn.sa-contentprocessing.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -196,7 +197,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
 
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -229,7 +230,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: jumpboxVmName
@@ -330,7 +331,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
   name: take('avm.res.maintenance-configuration.${jumpboxVmName}', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -368,7 +369,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
 var dataCollectionRulesLocation = logAnalyticsWorkspace!.outputs.location
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.8.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
@@ -441,6 +442,15 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
+            eventLogName: 'Security'
+            eventTypes: [
+              {
+                eventType: 'Audit Success'
+              }
+              {
+                eventType: 'Audit Failure'
+              }
+            ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -510,7 +520,7 @@ var dnsZoneIndex = {
 }
 
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: take('avm.res.network.private-dns-zone.${split(zone, '.')[1]}', 64)
     params: {
@@ -530,13 +540,14 @@ module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enabl
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
+    existingLogAnalyticsWorkspaceId: existingLogAnalyticsWorkspaceId
     enablePrivateNetworking: enablePrivateNetworking
     enableRedundancy: enableRedundancy
     replicaLocation: replicaLocation
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${solutionSuffix}', 64)
   params: {
     name: 'appi-${solutionSuffix}'
@@ -612,7 +623,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
 }
 
 // // ========== Storage Account ========== //
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
   name: take('module.storage-account.${solutionSuffix}', 64)
   params: {
     name: 'st${replace(solutionSuffix, '-', '')}'
@@ -711,14 +722,15 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
     name: 'aif-${solutionSuffix}'
     projectName: 'proj-${solutionSuffix}'
     projectDescription: 'proj-${solutionSuffix}'
-    location: aiServiceLocation
+    existingFoundryProjectResourceId: existingProjectResourceId
+    location: azureAiServiceLocation
     sku: 'S0'
     allowProjectManagement: true
     managedIdentities: { systemAssigned: true }
     kind: 'AIServices'
     tags: {
       app: solutionSuffix
-      location: aiServiceLocation
+      location: azureAiServiceLocation
     }
     customSubDomainName: 'aif-${solutionSuffix}'
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
@@ -777,7 +789,7 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
   }
 }
 
-module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.8.1' = if (enablePrivateNetworking && empty(existingProjectResourceId)) {
   name: take('avm.res.network.private-endpoint.${solutionSuffix}', 64)
   params: {
     name: 'pep-aiservices-${solutionSuffix}'
@@ -817,7 +829,7 @@ module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoi
   }
 }
 
-module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.14.2' = {
+module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.14.1' = {
   name: take('avm.res.cognitive-services.account.content-understanding.${solutionSuffix}', 64)
 
   params: {
@@ -859,7 +871,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.14.2' = 
   }
 }
 
-module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.8.1' = if (enablePrivateNetworking) {
   name: take('avm.res.network.private-endpoint.aicu-${solutionSuffix}', 64)
   params: {
     name: 'pep-aicu-${solutionSuffix}'
@@ -896,7 +908,7 @@ module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-en
 }
 
 // ========== Container App Environment ========== //
-module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.1' = {
+module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   params: {
     name: 'cae-${solutionSuffix}'
@@ -909,8 +921,10 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.1' = {
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          #disable-next-line BCP318 // logAnalyticsWorkspace is conditionally deployed with enableMonitoring guard
-          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+          logAnalyticsConfiguration: {
+            customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
+            sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
+          }
         }
       : null
     workloadProfiles: [
@@ -934,7 +948,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.1' = {
 }
 
 // //=========== Managed Identity for Container Registry ========== //
-module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
+module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-acr-${solutionSuffix}'
@@ -945,7 +959,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
 }
 
 // ========== Container App  ========== //
-module avmContainerApp 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
@@ -964,7 +978,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.21.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}'
-        image: '${publicContainerImageEndpoint}/contentprocessor:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessor:${imageTag}'
 
         resources: {
           cpu: 4
@@ -1006,7 +1020,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.21.0' = {
 }
 
 // ========== Container App API ========== //
-module avmContainerApp_API 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-api.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
@@ -1025,7 +1039,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.21.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: '${publicContainerImageEndpoint}/contentprocessorapi:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessorapi:${imageTag}'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1129,7 +1143,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.21.0' = {
 }
 
 //========== Container App Web ========== //
-module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-web.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-web'
@@ -1166,7 +1180,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.21.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-web'
-        image: '${publicContainerImageEndpoint}/contentprocessorweb:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessorweb:${imageTag}'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1211,7 +1225,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.21.0' = {
 }
 
 // ========== Container App Workflow ========== //
-module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-wkfl.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-wkfl'
@@ -1230,7 +1244,7 @@ module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.21.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-wkfl'
-        image: '${publicContainerImageEndpoint}/contentprocessorworkflow:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessorworkflow:${imageTag}'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1270,7 +1284,7 @@ module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.21.0' = {
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -1278,7 +1292,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
     mongodbDatabases: [
       {
         name: 'default'
-        tags: { purpose: 'default database' }
+        tag: 'default database'
       }
     ]
     tags: tags
@@ -1293,7 +1307,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
     defaultConsistencyLevel: 'Session'
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
-    zoneRedundant: true
+    zoneRedundant: false
 
     // WAF related parameters
     networkRestrictions: {
@@ -1582,7 +1596,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
 }
 
 // ========== Container App Update Modules ========== //
-module avmContainerApp_update 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
@@ -1601,7 +1615,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.21.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}'
-        image: '${publicContainerImageEndpoint}/contentprocessor:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessor:${imageTag}'
 
         resources: {
           cpu: 4
@@ -1657,7 +1671,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.21.0' = {
   ]
 }
 
-module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-api.update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
@@ -1677,7 +1691,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.21.0' =
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: '${publicContainerImageEndpoint}/contentprocessorapi:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessorapi:${imageTag}'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1784,7 +1798,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.21.0' =
 }
 
 // ========== Container App Workflow Update ========== //
-module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.21.0' = {
+module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.19.0' = {
   name: take('avm.res.app.container-app-wkfl.update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-wkfl'
@@ -1803,7 +1817,7 @@ module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.21
     containers: [
       {
         name: 'ca-${solutionSuffix}-wkfl'
-        image: '${publicContainerImageEndpoint}/contentprocessorworkflow:${imageTag}'
+        image: '${containerRegistryEndpoint}/contentprocessorworkflow:${imageTag}'
         resources: {
           cpu: 4
           memory: '8.0Gi'

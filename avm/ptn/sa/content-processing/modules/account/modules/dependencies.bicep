@@ -57,6 +57,9 @@ param projectName string
 @description('Optional: Description  for the project which needs to be created.')
 param projectDescription string
 
+@description('Optional: Provide the existing project resource id in case if it needs to be reused')
+param azureExistingAIProjectResourceId string = ''
+
 var builtInRoleNames = {
   'Cognitive Services Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -184,12 +187,12 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry = false
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-09-01' existing = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-07-01-preview' existing = {
   name: name
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-09-01' = [
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-07-01-preview' = [
   for (deployment, index) in (deployments ?? []): {
     parent: cognitiveService
     name: deployment.?name ?? '${name}-deployments'
@@ -219,7 +222,6 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: cognitiveService
 }
 
-#disable-next-line use-recent-api-versions // 2021-05-01-preview is the latest functional API version for diagnostic settings
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -249,7 +251,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -350,7 +352,7 @@ module secretsExport './keyVaultExport.bicep' = if (secretsExportConfiguration !
   }
 }
 
-module aiProject 'project.bicep' = if (!empty(projectName)) {
+module aiProject 'project.bicep' = if(!empty(projectName) || !empty(azureExistingAIProjectResourceId)) {
   name: take('${name}-ai-project-${projectName}-deployment', 64)
   params: {
     name: projectName
@@ -358,13 +360,13 @@ module aiProject 'project.bicep' = if (!empty(projectName)) {
     aiServicesName: cognitiveService.name
     location: location
     tags: tags
+    azureExistingAIProjectResourceId: azureExistingAIProjectResourceId
   }
 }
 
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  #disable-next-line BCP318 // Conditional access on secretsExport is guarded by secretsExportConfiguration != null
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
@@ -380,7 +382,6 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 import { aiProjectOutputType } from 'project.bicep'
-#disable-next-line BCP318 // Conditional access on aiProject module is guarded by projectName check
 output aiProjectInfo aiProjectOutputType = aiProject.outputs.aiProjectInfo
 
 // ================ //

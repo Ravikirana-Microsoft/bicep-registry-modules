@@ -41,7 +41,7 @@ param backendSubnetResourceId string = ''
 @description('Optional. Private DNS zone resource ID for Container Registry.')
 param privateDnsZoneResourceId string = ''
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.0' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: acrName
   params: {
     name: acrName

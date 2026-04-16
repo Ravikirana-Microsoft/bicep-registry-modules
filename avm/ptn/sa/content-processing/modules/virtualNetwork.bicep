@@ -180,20 +180,20 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-admin'
       securityRules: [
-        {
-          name: 'Deny-hop-outbound'
-          properties: {
-            access: 'Deny'
-            direction: 'Outbound'
-            priority: 200
-            protocol: '*'
-            sourcePortRange: '*'
-            destinationPortRanges: ['3389', '22']
-            sourceAddressPrefix: 'VirtualNetwork'
-            destinationAddressPrefix: '*'
-          }
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
         }
-      ]
+      }
+    ]
     }
   }
 ]
@@ -253,7 +253,7 @@ param resourceSuffix string
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
@@ -270,7 +270,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
     name: name
