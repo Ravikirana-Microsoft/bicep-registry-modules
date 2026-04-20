@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "3522691988672005087"
+      "templateHash": "5268231428881446974"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -23,38 +23,20 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "centralus",
-        "eastasia",
-        "eastus2",
-        "japaneast",
-        "northeurope",
-        "southeastasia",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
+        "description": "Optional. Azure region for all services. Supported regions: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
       }
     },
     "contentUnderstandingLocation": {
       "type": "string",
       "defaultValue": "WestUS",
-      "allowedValues": [
-        "WestUS",
-        "SwedenCentral",
-        "AustraliaEast"
-      ],
       "metadata": {
-        "azd": {
-          "type": "location"
-        },
-        "description": "Optional. Location for the Azure AI Content Understanding service deployment."
-      },
-      "minLength": 1
+        "description": "Optional. Azure region for Azure AI Content Understanding. Defaults to WestUS."
+      }
     },
     "azureAiServiceLocation": {
       "type": "string",
@@ -180,10 +162,7 @@
         },
         "description": "Optional. Tags to be applied to the resources."
       },
-      "defaultValue": {
-        "app": "Content Processing Solution Accelerator",
-        "location": "[resourceGroup().location]"
-      }
+      "nullable": true
     },
     "existingLogAnalyticsWorkspaceId": {
       "type": "string",
@@ -237,6 +216,11 @@
     }
   },
   "variables": {
+    "defaultTags": {
+      "app": "Content Processing Solution Accelerator",
+      "location": "[resourceGroup().location]"
+    },
+    "effectiveTags": "[coalesce(parameters('tags'), variables('defaultTags'))]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "existingProjectResourceId": "[trim(parameters('existingFoundryProjectResourceId'))]",
     "replicaRegionPairs": {
@@ -305,7 +289,7 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": "[shallowMerge(createArray(resourceGroup().tags, parameters('tags'), createObject('TemplateName', 'Content Processing', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, variables('effectiveTags'), createObject('TemplateName', 'Content Processing', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'), 'DeploymentName', deployment().name)))]"
       }
     },
     "virtualNetwork": {
@@ -331,7 +315,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "logAnalyticsWorkspaceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]",
           "resourceSuffix": {
@@ -3228,7 +3212,7 @@
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('name', 'bastionDiagnostics', 'workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value, 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs', 'enabled', true()))))), createObject('value', null()))]",
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -4949,7 +4933,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -5011,7 +4995,7 @@
             "value": [
               {
                 "name": "[format('nic-{0}', variables('jumpboxVmName'))]",
-                "tags": "[parameters('tags')]",
+                "tags": "[variables('effectiveTags')]",
                 "deleteOption": "Delete",
                 "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
                 "ipConfigurations": [
@@ -5027,7 +5011,7 @@
           "extensionAadJoinConfig": {
             "value": {
               "enabled": true,
-              "tags": "[parameters('tags')]",
+              "tags": "[variables('effectiveTags')]",
               "typeHandlerVersion": "1.0",
               "settings": {
                 "mdmId": ""
@@ -5048,14 +5032,14 @@
                   "time": "120"
                 }
               },
-              "tags": "[parameters('tags')]"
+              "tags": "[variables('effectiveTags')]"
             }
           },
-          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', reference('logAnalyticsWorkspace').outputs.name.value))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
+          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', reference('logAnalyticsWorkspace').outputs.name.value))), 'enabled', true(), 'tags', variables('effectiveTags'))), createObject('value', null()))]",
           "extensionNetworkWatcherAgentConfig": {
             "value": {
               "enabled": true,
-              "tags": "[parameters('tags')]"
+              "tags": "[variables('effectiveTags')]"
             }
           }
         },
@@ -14078,7 +14062,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -14491,7 +14475,7 @@
             "value": "[variables('dataCollectionRulesResourceName')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -15818,7 +15802,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -16185,7 +16169,7 @@
             "value": "[variables('privateDnsZones')[copyIndex()]]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -19590,7 +19574,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -22886,7 +22870,7 @@
           "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]",
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           }
         },
         "template": {
@@ -23630,7 +23614,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -24222,7 +24206,7 @@
             ]
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -28370,7 +28354,7 @@
             "value": "Hot"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "allowBlobPublicAccess": {
             "value": false
@@ -36490,8 +36474,8 @@
         "avmContainerApp_API",
         "avmContainerApp_Workflow",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "virtualNetwork"
       ]
     },
@@ -42096,7 +42080,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -42757,10 +42741,10 @@
       },
       "dependsOn": [
         "avmAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },
@@ -45307,7 +45291,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -45964,9 +45948,9 @@
       },
       "dependsOn": [
         "avmAiServices_cu",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },
@@ -46018,7 +46002,9 @@
           "platformReservedDnsIP": {
             "value": "172.17.17.17"
           },
-          "zoneRedundant": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
+          "zoneRedundant": {
+            "value": "[or(parameters('enableRedundancy'), parameters('enablePrivateNetworking'))]"
+          },
           "infrastructureSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.containersSubnetResourceId.value), createObject('value', null()))]"
         },
         "template": {
@@ -47136,7 +47122,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -47705,11 +47691,11 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]"
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]"
             }
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           }
         },
         "template": {
@@ -49243,7 +49229,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -49325,7 +49311,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]",
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]",
               "rules": [
                 {
                   "name": "http-scaler",
@@ -50898,7 +50884,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -50923,7 +50909,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]",
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]",
               "rules": [
                 {
                   "name": "http-scaler",
@@ -52515,7 +52501,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -52571,7 +52557,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]"
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]"
             }
           }
         },
@@ -54102,7 +54088,7 @@
             ]
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -54134,7 +54120,7 @@
             "value": 100
           },
           "zoneRedundant": {
-            "value": false
+            "value": "[parameters('enableRedundancy')]"
           },
           "networkRestrictions": {
             "value": {
@@ -62519,7 +62505,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "publicNetworkAccess": {
             "value": "Disabled"
@@ -64764,7 +64750,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -64820,7 +64806,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]",
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]",
               "rules": "[if(parameters('enableScalability'), createArray(createObject('name', 'http-scaler', 'http', createObject('metadata', createObject('concurrentRequests', 100)))), createArray())]"
             }
           }
@@ -66359,7 +66345,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -66441,7 +66427,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]",
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]",
               "rules": [
                 {
                   "name": "http-scaler",
@@ -68016,7 +68002,7 @@
             "value": null
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[variables('effectiveTags')]"
           },
           "managedIdentities": {
             "value": {
@@ -68072,7 +68058,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 2)]",
-              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]"
+              "minReplicas": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), 2, 1)]"
             }
           }
         },
