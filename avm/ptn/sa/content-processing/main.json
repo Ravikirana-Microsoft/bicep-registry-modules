@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1852706765783755017"
+      "version": "0.42.1.51946",
+      "templateHash": "7748051146568169837"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -332,8 +332,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13142111512339498436"
+              "version": "0.42.1.51946",
+              "templateHash": "7888020031834347868"
             }
           },
           "definitions": {
@@ -19599,8 +19599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3029680720477806048"
+              "version": "0.42.1.51946",
+              "templateHash": "12976265203217202314"
             }
           },
           "parameters": {
@@ -23626,8 +23626,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9876669373068522244"
+              "version": "0.42.1.51946",
+              "templateHash": "18123481228095028530"
             }
           },
           "parameters": {
@@ -24230,8 +24230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13193897782887827298"
+              "version": "0.42.1.51946",
+              "templateHash": "453993797073297762"
             },
             "name": "Container Registry Module"
           },
@@ -36597,8 +36597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13388160589970199650"
+              "version": "0.42.1.51946",
+              "templateHash": "4726248161381413577"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -37847,8 +37847,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "8344841254562048220"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4695213828291628309"
                     }
                   },
                   "definitions": {
@@ -39570,8 +39570,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "10989408486030617267"
+                              "version": "0.42.1.51946",
+                              "templateHash": "2422737205646151487"
                             }
                           },
                           "definitions": {
@@ -39724,8 +39724,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "17898418449439758693"
+                              "version": "0.42.1.51946",
+                              "templateHash": "15070735288736285299"
                             }
                           },
                           "definitions": {
@@ -39942,8 +39942,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "8344841254562048220"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4695213828291628309"
                     }
                   },
                   "definitions": {
@@ -41665,8 +41665,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "10989408486030617267"
+                              "version": "0.42.1.51946",
+                              "templateHash": "2422737205646151487"
                             }
                           },
                           "definitions": {
@@ -41819,8 +41819,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "17898418449439758693"
+                              "version": "0.42.1.51946",
+                              "templateHash": "15070735288736285299"
                             }
                           },
                           "definitions": {
