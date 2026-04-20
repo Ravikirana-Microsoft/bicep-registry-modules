@@ -579,7 +579,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: location
     acrSku: enableRedundancy || enablePrivateNetworking ? 'Premium' : 'Standard'
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: (enablePrivateNetworking || enableRedundancy) ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     roleAssignments: [
       {
@@ -648,7 +648,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
+      defaultAction: (enablePrivateNetworking || enableRedundancy) ? 'Deny' : 'Allow'
       ipRules: []
     }
     supportsHttpsTrafficOnly: true
@@ -657,7 +657,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
 
     //<======================= WAF related parameters
     allowBlobPublicAccess: false
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: (enablePrivateNetworking || enableRedundancy) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
       ? [
           {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13115759356002136475"
+      "templateHash": "1852706765783755017"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -24192,7 +24192,7 @@
             "value": "[parameters('location')]"
           },
           "acrSku": "[if(or(parameters('enableRedundancy'), parameters('enablePrivateNetworking')), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "publicNetworkAccess": "[if(or(parameters('enablePrivateNetworking'), parameters('enableRedundancy')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "zoneRedundancy": {
             "value": "Disabled"
           },
@@ -24231,7 +24231,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "4968216908617736304"
+              "templateHash": "13193897782887827298"
             },
             "name": "Container Registry Module"
           },
@@ -24439,9 +24439,11 @@
                     "value": "[parameters('enableTelemetry')]"
                   },
                   "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('location', parameters('replicaLocation'), 'name', format('acrrepl{0}', replace(parameters('replicaLocation'), '-', ''))))), createObject('value', null()))]",
-                  "networkRuleSetDefaultAction": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
-                  "networkRuleSetIpRules": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray()), createObject('value', createArray()))]",
-                  "exportPolicyStatus": "[if(parameters('enablePrivateNetworking'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
+                  "networkRuleSetDefaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
+                  "networkRuleSetIpRules": {
+                    "value": []
+                  },
+                  "exportPolicyStatus": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
                   "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-acr-{0}', parameters('acrName')), 'customNetworkInterfaceName', format('nic-acr-{0}', parameters('acrName')), 'privateDnsZoneGroup', if(not(empty(parameters('privateDnsZoneResourceId'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'acr-dns-zone-group', 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')))), null()), 'subnetResourceId', parameters('backendSubnetResourceId')))), createObject('value', createArray()))]"
                 },
                 "template": {
@@ -28343,7 +28345,7 @@
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]",
+              "defaultAction": "[if(or(parameters('enablePrivateNetworking'), parameters('enableRedundancy')), 'Deny', 'Allow')]",
               "ipRules": []
             }
           },
@@ -28359,7 +28361,7 @@
           "allowBlobPublicAccess": {
             "value": false
           },
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "publicNetworkAccess": "[if(or(parameters('enablePrivateNetworking'), parameters('enableRedundancy')), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'queue'))), createObject('value', createArray()))]"
         },
         "template": {
@@ -42741,10 +42743,10 @@
       },
       "dependsOn": [
         "avmAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "virtualNetwork"
       ]
     },
@@ -45948,9 +45950,9 @@
       },
       "dependsOn": [
         "avmAiServices_cu",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
