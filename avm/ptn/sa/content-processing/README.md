@@ -157,14 +157,14 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
-    enableRedundancy: false
+    enableRedundancy: true
     enableScalability: false
     enableTelemetry: true
     gptDeploymentCapacity: 10
+    location: '<location>'
     solutionName: 'scpmin'
   }
 }
@@ -186,9 +186,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": false
@@ -197,7 +194,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": false
     },
     "enableRedundancy": {
-      "value": false
+      "value": true
     },
     "enableScalability": {
       "value": false
@@ -207,6 +204,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "scpmin"
@@ -227,14 +227,14 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
-param enableRedundancy = false
+param enableRedundancy = true
 param enableScalability = false
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
+param location = '<location>'
 param solutionName = 'scpmin'
 ```
 
@@ -257,7 +257,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
@@ -265,6 +264,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: false
     enableTelemetry: true
     gptDeploymentCapacity: 10
+    location: '<location>'
     solutionName: 'scpsbx'
   }
 }
@@ -286,9 +286,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": false
@@ -307,6 +304,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "scpsbx"
@@ -327,7 +327,6 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
@@ -335,6 +334,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
+param location = '<location>'
 param solutionName = 'scpsbx'
 ```
 
@@ -357,7 +357,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -365,6 +364,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: true
     enableTelemetry: true
     gptDeploymentCapacity: 10
+    location: '<location>'
     solutionName: 'scpegwaf'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -388,9 +388,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": true
@@ -409,6 +406,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "scpegwaf"
@@ -435,7 +435,6 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
@@ -443,6 +442,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
+param location = '<location>'
 param solutionName = 'scpegwaf'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -458,14 +458,13 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for the Azure AI Services deployment. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerRegistryEndpoint`](#parameter-containerregistryendpoint) | string | The container registry login server/endpoint for the container images (for example, an Azure Container Registry endpoint). |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Azure AI Content Understanding service deployment. |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Azure region for Azure AI Content Understanding. Defaults to WestUS. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
@@ -480,6 +479,7 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`imageTag`](#parameter-imagetag) | string | The image tag for the container images. |
+| [`location`](#parameter-location) | string | Azure region for all services. Supported regions: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`solutionName`](#parameter-solutionname) | string | Name of the solution to deploy. This should be 3-20 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
@@ -507,26 +507,6 @@ Location for the Azure AI Services deployment.
   ]
   ```
 
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
-
 ### Parameter: `containerRegistryEndpoint`
 
 The container registry login server/endpoint for the container images (for example, an Azure Container Registry endpoint).
@@ -537,19 +517,11 @@ The container registry login server/endpoint for the container images (for examp
 
 ### Parameter: `contentUnderstandingLocation`
 
-Location for the Azure AI Content Understanding service deployment.
+Azure region for Azure AI Content Understanding. Defaults to WestUS.
 
 - Required: No
 - Type: string
 - Default: `'WestUS'`
-- Allowed:
-  ```Bicep
-  [
-    'AustraliaEast'
-    'SwedenCentral'
-    'WestUS'
-  ]
-  ```
 
 ### Parameter: `createdBy`
 
@@ -677,6 +649,14 @@ The image tag for the container images.
 - Type: string
 - Default: `'latest_v2'`
 
+### Parameter: `location`
+
+Azure region for all services. Supported regions: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `solutionName`
 
 Name of the solution to deploy. This should be 3-20 characters long.
@@ -699,13 +679,6 @@ Tags to be applied to the resources.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      app: 'Content Processing Solution Accelerator'
-      location: '[resourceGroup().location]'
-  }
-  ```
 
 ### Parameter: `vmAdminPassword`
 

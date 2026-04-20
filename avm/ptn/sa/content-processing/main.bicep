@@ -11,27 +11,10 @@ metadata description = 'Bicep template to deploy the Content Processing Solution
 param solutionName string = 'cps'
 
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+@description('Optional. Azure region for all services. Supported regions: australiaeast, centralus, eastasia, eastus2, japaneast, northeurope, southeastasia, uksouth. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+param location string = resourceGroup().location
 
-@minLength(1)
-@description('Optional. Location for the Azure AI Content Understanding service deployment.')
-@allowed(['WestUS', 'SwedenCentral', 'AustraliaEast'])
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
+@description('Optional. Azure region for Azure AI Content Understanding. Defaults to WestUS.')
 param contentUnderstandingLocation string = 'WestUS'
 
 @allowed([
@@ -102,10 +85,14 @@ param enableScalability bool = false
 param enablePurgeProtection bool = false
 
 @description('Optional. Tags to be applied to the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
+
+var defaultTags = {
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
+
+var effectiveTags = tags ?? defaultTags
 
 @description('Optional. Existing Log Analytics Workspace Resource ID.')
 param existingLogAnalyticsWorkspaceId string = ''
@@ -188,7 +175,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
     name: 'vnet-${solutionSuffix}'
     addressPrefixes: ['10.0.0.0/8']
     location: location
-    tags: tags
+    tags: effectiveTags
     logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
     resourceSuffix: solutionSuffix
     enableTelemetry: enableTelemetry
@@ -218,7 +205,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
           }
         ]
       : null
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
@@ -235,7 +222,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
   params: {
     name: jumpboxVmName
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     computerName: take(jumpboxVmName, 15)
     osType: 'Windows'
@@ -272,7 +259,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
     nicConfigurations: [
       {
         name: 'nic-${jumpboxVmName}'
-        tags: tags
+        tags: effectiveTags
         deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
           ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
@@ -290,7 +277,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
     ]
     extensionAadJoinConfig: {
       enabled: true
-      tags: tags
+      tags: effectiveTags
       typeHandlerVersion: '1.0'
       settings: {
         mdmId: ''
@@ -309,7 +296,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
           time: '120'
         }
       }
-      tags: tags
+      tags: effectiveTags
     }
     //WAF aligned configuration for Monitoring
     extensionMonitoringAgentConfig: enableMonitoring
@@ -321,12 +308,12 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
             }
           ]
           enabled: true
-          tags: tags
+          tags: effectiveTags
         }
       : null
     extensionNetworkWatcherAgentConfig: {
       enabled: true
-      tags: tags
+      tags: effectiveTags
     }
   }
 }
@@ -336,7 +323,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   params: {
     name: 'mc-${jumpboxVmName}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     extensionProperties: {
       InGuestPatchMode: 'User'
@@ -373,7 +360,7 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     location: dataCollectionRulesLocation
     dataCollectionRuleProperties: {
@@ -478,7 +465,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
   params: {
     name: proximityPlacementGroupResourceName
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     availabilityZone: enableRedundancy ? 1 : -1
   }
@@ -516,7 +503,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
     name: take('avm.res.network.private-dns-zone.${split(zone, '.')[1]}', 64)
     params: {
       name: zone
-      tags: tags
+      tags: effectiveTags
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork!.outputs.resourceId }]
     }
@@ -529,7 +516,7 @@ module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enabl
   params: {
     name: 'log-${solutionSuffix}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     existingLogAnalyticsWorkspaceId: existingLogAnalyticsWorkspaceId
     enablePrivateNetworking: enablePrivateNetworking
@@ -551,7 +538,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (en
     // WAF aligned configuration for Monitoring
     workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
-    tags: tags
+    tags: effectiveTags
   }
 }
 
@@ -566,7 +553,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   properties: {
     tags: {
       ...resourceGroup().tags
-      ...tags
+      ...effectiveTags
       TemplateName: 'Content Processing'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
@@ -581,7 +568,7 @@ module avmManagedIdentity './modules/managed-identity.bicep' = {
   params: {
     name: 'id-${solutionSuffix}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -601,7 +588,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     enableRedundancy: enableRedundancy
     replicaLocation: replicaLocation
@@ -666,7 +653,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     }
     supportsHttpsTrafficOnly: true
     accessTier: 'Hot'
-    tags: tags
+    tags: effectiveTags
 
     //<======================= WAF related parameters
     allowBlobPublicAccess: false
@@ -785,7 +772,7 @@ module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoi
   params: {
     name: 'pep-aiservices-${solutionSuffix}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     customNetworkInterfaceName: 'nic-aiservices-${solutionSuffix}'
     privateLinkServiceConnections: [
@@ -868,7 +855,7 @@ module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-en
   params: {
     name: 'pep-aicu-${solutionSuffix}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     customNetworkInterfaceName: 'nic-aicu-${solutionSuffix}'
     privateLinkServiceConnections: [
@@ -930,7 +917,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.2' = {
 
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    zoneRedundant: (enablePrivateNetworking) ? true : false // Enable zone redundancy if private networking is enabled
+    zoneRedundant: enableRedundancy || enablePrivateNetworking
     infrastructureSubnetResourceId: (enablePrivateNetworking)
       ? virtualNetwork!.outputs.containersSubnetResourceId // Use the container app subnet
       : null // Use the container app subnet
@@ -943,7 +930,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
   params: {
     name: 'id-acr-${solutionSuffix}'
     location: location
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
   }
 }
@@ -1003,9 +990,9 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.22.0' = {
     disableIngress: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
     }
-    tags: tags
+    tags: effectiveTags
   }
 }
 
@@ -1019,7 +1006,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.22.0' = {
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1097,7 +1084,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.22.0' = {
     ]
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
       rules: [
         {
           name: 'http-scaler'
@@ -1142,7 +1129,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.22.0' = {
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1155,7 +1142,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.22.0' = {
     ingressTransport: 'auto'
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
       rules: [
         {
           name: 'http-scaler'
@@ -1224,7 +1211,7 @@ module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.22.0' = {
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1268,7 +1255,7 @@ module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.22.0' = {
     disableIngress: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
     }
   }
 }
@@ -1285,7 +1272,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
         tags: {}
       }
     ]
-    tags: tags
+    tags: effectiveTags
     enableTelemetry: enableTelemetry
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: false
@@ -1297,7 +1284,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
     defaultConsistencyLevel: 'Session'
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
-    zoneRedundant: false
+    zoneRedundant: enableRedundancy
 
     // WAF related parameters
     networkRestrictions: {
@@ -1561,7 +1548,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
     location: location
     enablePurgeProtection: enablePurgeProtection
     enableTelemetry: enableTelemetry
-    tags: tags
+    tags: effectiveTags
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
@@ -1595,7 +1582,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.22.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1640,7 +1627,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.22.0' = {
     disableIngress: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
       rules: enableScalability
         ? [
             {
@@ -1670,7 +1657,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.22.0' =
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1749,7 +1736,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.22.0' =
     ]
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
       rules: [
         {
           name: 'http-scaler'
@@ -1797,7 +1784,7 @@ module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.22
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     registries: null
-    tags: tags
+    tags: effectiveTags
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -1841,7 +1828,7 @@ module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.22
     disableIngress: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 2
-      minReplicas: enableScalability ? 2 : 1
+      minReplicas: (enableScalability || enableRedundancy) ? 2 : 1
     }
   }
 }

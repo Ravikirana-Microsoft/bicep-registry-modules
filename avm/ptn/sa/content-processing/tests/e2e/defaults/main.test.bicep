@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
       gptDeploymentCapacity: 10
       enablePrivateNetworking: false
       enableMonitoring: false
-      enableRedundancy: false
+      enableRedundancy: true
       enableScalability: false
       enableTelemetry: true
     }
