@@ -169,7 +169,7 @@ var replicaRegionPairs = {
 var replicaLocation = replicaRegionPairs[?location]
 
 // ========== Virtual Network ========== //
-module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
+module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetworking || enableRedundancy) {
   name: take('module.virtual-network.${solutionSuffix}', 64)
   params: {
     name: 'vnet-${solutionSuffix}'
@@ -918,7 +918,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.2' = {
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     zoneRedundant: enableRedundancy || enablePrivateNetworking
-    infrastructureSubnetResourceId: (enablePrivateNetworking)
+    infrastructureSubnetResourceId: (enablePrivateNetworking || enableRedundancy)
       ? virtualNetwork!.outputs.containersSubnetResourceId // Use the container app subnet
       : null // Use the container app subnet
   }
